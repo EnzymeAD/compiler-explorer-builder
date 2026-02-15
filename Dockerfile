@@ -29,6 +29,7 @@ COPY --exclude=.git compiler-explorer /src/compiler-explorer
 COPY files/ /src/compiler-explorer/
 # Copy enzyme-specific overrides
 WORKDIR /src/compiler-explorer
+RUN sed -i 's|${req.get("'"host"'")}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
 RUN make prebuild
 
 FROM node_base AS with_devtools
