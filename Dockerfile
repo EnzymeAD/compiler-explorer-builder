@@ -31,7 +31,17 @@ COPY files/ /src/compiler-explorer/
 WORKDIR /src/compiler-explorer
 RUN make prebuild
 
-FROM node_base
+FROM node_base AS with_devlibs
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       libc6-dev \
+       libstdc++-14-dev \
+       libc++-19-dev \
+    && apt-get autoremove -y --purge \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM with_devlibs
 # Built output
 COPY --from=build /src/compiler-explorer/out /app/out
 COPY --from=build /src/compiler-explorer/node_modules /app/node_modules
