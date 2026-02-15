@@ -5,7 +5,7 @@ FROM ubuntu:24.04 AS node_base
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y curl \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get update && apt-get install -y --no-install-recommends nodejs \
     && apt-get autoremove -y --purge \
     && apt-get clean -y \
