@@ -3,6 +3,8 @@ name: Publish Docker image
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   push_to_registries:
@@ -23,6 +25,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+        # Don't log in if this is a pull request.
+        if: github.event_name != 'pull_request'
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -36,6 +40,9 @@ jobs:
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # See: https://docs.docker.com/build/ci/github-actions/cache/#github-cache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
