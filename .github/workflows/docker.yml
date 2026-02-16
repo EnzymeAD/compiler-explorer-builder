@@ -36,7 +36,7 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: |
-            ghcr.io/${{ github.repository }}
+            ghcr.io/${{ github.repository }}-${{ matrix.target }}
 
       - name: Copy data directory
         shell: bash
@@ -49,7 +49,7 @@ jobs:
         with:
           context: "./${{ matrix.target }}"
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ matrix.target }}
           labels: ${{ steps.meta.outputs.labels }}
           # See: https://docs.docker.com/build/ci/github-actions/cache/#github-cache
           cache-from: type=gha,scope=${{ matrix.target }}
