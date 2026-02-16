@@ -13,8 +13,8 @@ if len(sys.argv) < 4:
     sys.exit(1)
 
 # --- Configuration ---
-CLANG_VERSIONS_FILE = Path(sys.argv[1] + "/clang-versions.txt")
-TRUNK_VERSION_FILE = Path(sys.argv[1] + "/trunk-llvm-version.txt")
+CLANG_VERSIONS_FILE = Path(sys.argv[1]) / "clang-versions.txt"
+TRUNK_VERSION_FILE = Path(sys.argv[1]) / "trunk-llvm-version.txt"
 SOURCE_CONFIG_DIR = Path(sys.argv[3])
 TEMPLATE_DIR = Path(sys.argv[2])
 BRANCHES = ["main"]
