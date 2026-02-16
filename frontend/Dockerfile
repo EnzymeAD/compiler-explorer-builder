@@ -62,5 +62,7 @@ ENV JULIA_DEPOT_PATH=/local/juliapackages:/opt/compiler-explorer/juliapackages
 ENV JULIA_PKG_SERVER=http://package-proxy
 ENV NODE_ENV=production
 
+LABEL org.opencontainers.image.source=https://github.com/EnzymeAD/compiler-explorer-builder
+LABEL org.opencontainers.image.description="Enzyme Explorer"
 WORKDIR /app
 ENTRYPOINT ["node", "./out/dist/app.js", "--static", "./out/webpack/static", "--env", "enzyme"]
