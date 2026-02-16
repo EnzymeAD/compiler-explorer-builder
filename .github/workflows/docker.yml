@@ -37,7 +37,7 @@ jobs:
 
       - name: Copy data directory
         shell: bash
-        run: cp -r data frontend/data
+        run: cp -r data frontend/
 
       - name: Build and push frontend Docker images
         id: push
