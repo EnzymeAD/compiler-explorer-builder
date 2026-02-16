@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl git cron m
 
 RUN curl -fLO https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64
 RUN mv bazel* /usr/bin/bazel
-RUN chmod +x .local/bin/bazel
+RUN chmod +x /usr/bin/bazel
 
 RUN git clone -b main https://github.com/EnzymeAD/Enzyme.git /app/Enzyme
 RUN git clone -b main https://github.com/EnzymeAD/Enzyme-JaX.git /app/Enzyme-JaX

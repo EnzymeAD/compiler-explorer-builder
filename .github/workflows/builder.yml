@@ -1,4 +1,4 @@
-name: Publish Compilers Docker image
+name: Publish Builder Docker image
 
 on:
   push:
