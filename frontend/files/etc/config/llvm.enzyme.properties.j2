@@ -1,0 +1,38 @@
+binaryHideFuncRe=^(__.*|_(init|start|fini)|(de)?register_tm_clones|call_gmon_start|frame_dummy|(_GLOBAL__sub_I_|\.plt).*|.*@plt(-0x[0-9a-f]+)?)$
+objdumper=objdump
+demangler=c++filt
+
+compilers=&clang-enzyme-main:&opt-enzyme-main
+defaultCompiler=opt12-enzyme-main
+
+group.opt-enzyme-main.compilers={% for compiler in compilers %}opt{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
+group.opt-enzyme-main.compilerType=opt
+group.opt-enzyme-main.supportsExecute=false
+group.opt-enzyme-main.isSemVer=true
+group.opt-enzyme-main.groupName=OPT + ENZYME (main)
+
+{% for compiler in compilers %}
+compiler.opt{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/opt
+{% if compiler.version_int >= 16 %}
+compiler.opt{{ compiler.version }}-enzyme-main.options=-load-pass-plugin=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -load=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -passes=enzyme --enzyme-attributor=0
+{% else %}
+compiler.opt{{ compiler.version }}-enzyme-main.options=-load-pass-plugin=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -load=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -enzyme --enzyme-attributor=0
+{% endif %}
+compiler.opt{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
+compiler.opt{{ compiler.version }}-enzyme-main.name=opt {{ compiler.version }} ({{ compiler.enzyme_commit }})
+{% endfor %}
+
+group.clang-enzyme-main.compilers={% for compiler in compilers %}irclang{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
+group.clang-enzyme-main.intelAsm=-mllvm --x86-asm-syntax=intel
+group.clang-enzyme-main.compilerType=clang
+group.clang-enzyme-main.supportsExecute=true
+group.clang-enzyme-main.isSemVer=true
+group.clang-enzyme-main.groupName=CLANG + ENZYME (main)
+group.clang-enzyme-main.options=-fno-discard-value-names
+
+{% for compiler in compilers %}
+compiler.irclang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang
+compiler.irclang{{ compiler.version }}-enzyme-main.options=-fpass-plugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
+compiler.irclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
+compiler.irclang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
+{% endfor %}

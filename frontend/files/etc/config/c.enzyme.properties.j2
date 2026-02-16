@@ -1,0 +1,34 @@
+# Default settings for C
+compilers=&clang-enzyme-main
+defaultCompiler=cclang12-enzyme-main
+demangler=c++filt
+objdumper=objdump
+postProcess=
+supportsBinary=true
+binaryHideFuncRe=^(__.*|_(init|start|fini)|(de)?register_tm_clones|call_gmon_start|frame_dummy|\.plt.*)$
+stubRe=\bmain\b
+stubText=int main(void){return 0;/*stub provided by Compiler Explorer*/}
+supportsLibraryCodeFilter=true
+
+group.clang-enzyme-main.compilers={% for compiler in compilers %}cclang{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
+group.clang-enzyme-main.intelAsm=-mllvm --x86-asm-syntax=intel
+group.clang-enzyme-main.compilerType=clang
+group.clang-enzyme-main.supportsExecute=true
+group.clang-enzyme-main.isSemVer=true
+group.clang-enzyme-main.groupName=CLANG + ENZYME (main)
+group.clang-enzyme-main.options=-fno-discard-value-names
+
+libs=petsc
+
+libs.petsc.name=PETSc
+libs.petsc.versions=3194
+libs.petsc.url=https://petsc.org
+libs.petsc.versions.3194.version=3.19.4
+libs.petsc.versions.3194.path=/opt/compiler-explorer/libs/petsc-3.19.4/include
+
+{% for compiler in compilers %}
+compiler.cclang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang
+compiler.cclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
+compiler.cclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
+compiler.cclang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
+{% endfor %}
