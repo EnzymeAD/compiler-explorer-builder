@@ -1,4 +1,4 @@
 [submodule "compiler-explorer"]
-	path = compiler-explorer
+	path = frontend/compiler-explorer
 	url = https://github.com/compiler-explorer/compiler-explorer
 	shallow = true
