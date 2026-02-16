@@ -12,8 +12,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     container:
-      image: ${{ (contains(matrix.os, 'linux') && 'ghcr.io/enzymead/docker-docker-images@sha256:230531860eac457c3c8b877a0f960262b87da9214a759ae85abdd9961a1e5ee9' ) || '' }}
-
+      # image: ${{ (contains(matrix.os, 'linux') && 'ghcr.io/enzymead/docker-docker-images@sha256:230531860eac457c3c8b877a0f960262b87da9214a759ae85abdd9961a1e5ee9' ) || '' }}
+      image: ${{ 'ghcr.io/enzymead/docker-docker-images@sha256:230531860eac457c3c8b877a0f960262b87da9214a759ae85abdd9961a1e5ee9' }}
+      options: --privileged
+      
     permissions:
       packages: write
       contents: read
@@ -21,8 +23,8 @@ jobs:
       matrix:
         target: ["frontend", "compilers"]
         os:
-          - linux-x86-n2-32
-          # - jll
+          # - linux-x86-n2-32
+          - jll
     steps:
       - name: Check out the repo
         uses: actions/checkout@v6
