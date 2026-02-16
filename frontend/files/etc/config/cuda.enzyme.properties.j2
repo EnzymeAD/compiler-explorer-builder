@@ -11,6 +11,10 @@ group.cuclang-enzyme-main.isSemVer=true
 group.cuclang-enzyme-main.groupName=CUCLANG + ENZYME (main)
 group.cuclang-enzyme-main.options=--cuda-path=/opt/compiler-explorer/cuda/12.1.0 --cuda-gpu-arch=sm_70 --cuda-device-only
 
+libs=eigen:boost:nlohmann_json:petsc
+
+{% include 'libs.j2' %}
+
 {% for compiler in compilers %}
 compiler.cuclang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang++
 compiler.cuclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so

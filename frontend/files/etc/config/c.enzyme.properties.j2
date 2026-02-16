@@ -20,11 +20,7 @@ group.clang-enzyme-main.options=-fno-discard-value-names
 
 libs=petsc
 
-libs.petsc.name=PETSc
-libs.petsc.versions=3194
-libs.petsc.url=https://petsc.org
-libs.petsc.versions.3194.version=3.19.4
-libs.petsc.versions.3194.path=/opt/compiler-explorer/libs/petsc-3.19.4/include
+{% include 'libs.j2' %}
 
 {% for compiler in compilers %}
 compiler.cclang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang

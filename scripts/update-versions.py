@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import re
 import shutil
@@ -43,8 +45,13 @@ def run_update():
     compilers_raw = Path(CLANG_VERSIONS_FILE).read_text().splitlines()
     compilers_raw = [c.strip() for c in compilers_raw if c.strip()]
 
+    from jinja2 import ChoiceLoader
+
     # 3. Generate context for templates
-    env = Environment(loader=FileSystemLoader(str(SOURCE_CONFIG_DIR)))
+    env = Environment(loader=ChoiceLoader([
+        FileSystemLoader(str(SOURCE_CONFIG_DIR)),
+        FileSystemLoader("data")
+    ]))
     
     for branch in BRANCHES:
         compiler_data = []
