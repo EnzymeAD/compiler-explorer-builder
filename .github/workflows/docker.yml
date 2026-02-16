@@ -39,7 +39,6 @@ jobs:
         shell: bash
         run: |
           cp -r data frontend/
-          find frontend
 
       - name: Build and push frontend Docker images
         id: push
