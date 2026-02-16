@@ -13,7 +13,7 @@ group.opt-enzyme-main.groupName=OPT + ENZYME (main)
 
 {% for compiler in compilers %}
 compiler.opt{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/opt
-{% if compiler.version_int >= 16 %}
+{% if compiler.version >= 16 %}
 compiler.opt{{ compiler.version }}-enzyme-main.options=-load-pass-plugin=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -load=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -passes=enzyme --enzyme-attributor=0
 {% else %}
 compiler.opt{{ compiler.version }}-enzyme-main.options=-load-pass-plugin=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -load=/opt/compiler-explorer/main/LLVMEnzyme-{{ compiler.version }}.so -enzyme --enzyme-attributor=0
