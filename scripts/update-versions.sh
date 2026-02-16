@@ -25,10 +25,10 @@ fi
 # Create config files in a temporary directory
 mkdir -p /tmp/ce
 
-cp files/etc/config/c++.enzyme.properties /tmp/ce/
-cp files/etc/config/c.enzyme.properties /tmp/ce/
-cp files/etc/config/llvm.enzyme.properties /tmp/ce/
-cp files/etc/config/cuda.enzyme.properties /tmp/ce/
+cp frontend/files/etc/config/c++.enzyme.properties /tmp/ce/
+cp frontend/files/etc/config/c.enzyme.properties /tmp/ce/
+cp frontend/files/etc/config/llvm.enzyme.properties /tmp/ce/
+cp frontend/files/etc/config/cuda.enzyme.properties /tmp/ce/
 
 for branch in ${branches[@]}; do
 
@@ -112,7 +112,7 @@ for branch in ${branches[@]}; do
 done
 
 # Move finished config files to the final location
-cp /tmp/ce/cuda.enzyme.properties files/etc/config/
-cp /tmp/ce/c++.enzyme.properties files/etc/config/
-cp /tmp/ce/c.enzyme.properties files/etc/config/
-cp /tmp/ce/llvm.enzyme.properties files/etc/config/
+cp /tmp/ce/cuda.enzyme.properties frontend/files/etc/config/
+cp /tmp/ce/c++.enzyme.properties frontend/files/etc/config/
+cp /tmp/ce/c.enzyme.properties frontend/files/etc/config/
+cp /tmp/ce/llvm.enzyme.properties frontend/files/etc/config/
