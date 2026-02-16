@@ -1,21 +1,30 @@
-name: Publish Docker image
+name: Publish Frontend Docker image
 
 on:
   push:
     branches: ["main"]
+    paths:
+      - ".gitmodules"
+      - "frontend/**"
+      - "data/**"
+      - ".github/workflows/frontend.yml"
   pull_request:
     branches: ["main"]
+    paths:
+      - ".gitmodules"
+      - "frontend/**"
+      - "data/**"
+      - ".github/workflows/frontend.yml"
 
 jobs:
-  push_to_registries:
-    name: Push Docker image to registry
+  frontend:
+    name: Build frontend
     runs-on: docker
     permissions:
       packages: write
       contents: read
-    strategy:
-      matrix:
-        target: ["frontend", "compilers"]
+    env:
+      target: frontend
     steps:
       - name: Check out the repo
         uses: actions/checkout@v5
@@ -36,21 +45,21 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: |
-            ghcr.io/${{ github.repository }}-${{ matrix.target }}
+            ghcr.io/${{ github.repository }}-${{ env.target }}
 
       - name: Copy data directory
         shell: bash
         run: |
-          cp -r data frontend/
+          cp -r data ${{ env.target }}/
 
-      - name: Build and push frontend Docker images
+      - name: Build and push ${{ env.target }} Docker images
         id: push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-          context: "./${{ matrix.target }}"
+          context: "./${{ env.target }}"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # See: https://docs.docker.com/build/ci/github-actions/cache/#github-cache
-          cache-from: type=gha,scope=${{ matrix.target }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.target }}
+          cache-from: type=gha,scope=${{ env.target }}
+          cache-to: type=gha,mode=max,scope=${{ env.target }}
