@@ -10,8 +10,8 @@ jobs:
   push_to_registries:
     name: Push Docker image to registry
     runs-on: ${{ matrix.os }}
-    container:
-      image: ${{ (contains(matrix.os, 'linux') && 'ghcr.io/enzymead/docker-docker-images:main@sha256:230531860eac457c3c8b877a0f960262b87da9214a759ae85abdd9961a1e5ee9' ) || '' }}
+    # container:
+    #   image: ${{ (contains(matrix.os, 'linux') && 'ghcr.io/enzymead/docker-docker-images:main@sha256:230531860eac457c3c8b877a0f960262b87da9214a759ae85abdd9961a1e5ee9' ) || '' }}
     permissions:
       packages: write
       contents: read
@@ -19,10 +19,11 @@ jobs:
       matrix:
         target: ["frontend", "compilers"]
         os:
-          - linux-x86-n2-32
+          # - linux-x86-n2-32
+          - jll
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
