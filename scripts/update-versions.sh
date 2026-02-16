@@ -103,6 +103,7 @@ for branch in ${branches[@]}; do
 		setProperty "compiler.opt$version-enzyme-$branch.options" "-load-pass-plugin=/opt/compiler-explorer/$branch/LLVMEnzyme-$version.so -load=/opt/compiler-explorer/$branch/LLVMEnzyme-$version.so -enzyme --enzyme-attributor=0" "/tmp/ce/llvm.enzyme.properties"
 		fi
 
+		setProperty "compiler.cuclang$version-enzyme-$branch.semver" "$semver" "/tmp/ce/c++.enzyme.properties"
 		setProperty "compiler.clang$version-enzyme-$branch.semver" "$semver" "/tmp/ce/c++.enzyme.properties"
 		setProperty "compiler.cclang$version-enzyme-$branch.semver" "$semver" "/tmp/ce/c.enzyme.properties"
 		setProperty "compiler.irclang$version-enzyme-$branch.semver" "$semver" "/tmp/ce/llvm.enzyme.properties"
