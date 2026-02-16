@@ -29,7 +29,7 @@ COPY --exclude=.git compiler-explorer /src/compiler-explorer
 COPY files/ /src/compiler-explorer/
 COPY template_files/ /src/template_compiler-explorer/
 COPY scripts/ /src/scripts/
-COPY data/ /ver_data
+COPY ./data/ /ver_data
 
 # Copy enzyme-specific overrides
 WORKDIR /src/compiler-explorer
