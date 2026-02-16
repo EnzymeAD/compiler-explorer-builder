@@ -1,7 +1,15 @@
 #!/bin/bash
 
 # Compilers are located under /opt/compiler-explorer/ 
-declare -a compilers=("clang-15.0.0" "clang-16.0.0" "clang-17.0.1" "clang-18.1.0" "clang-19.1.0" "clang-20.1.0" "clang-21.1.0" "clang-assertions-trunk")
+
+compilers=()
+while IFS= read -r line || [[ -n "$line" ]]; do
+    compilers+=("$line")
+done < data/clang-versions.txt
+
+# Read the trunk version (e.g., 22) from the file and trim any whitespace
+trunk_version=$(cat trunk-llvm-version.txt | xargs)
+
 declare -a branches=("main")
 
 # Utility to insert or update key value pairs in .properties files.
@@ -75,8 +83,9 @@ for branch in ${branches[@]}; do
 
 
 	for compiler in ${compilers[@]}; do
+		echo "compiler=$compiler"
 		version=$(echo $compiler | grep -o -E '[0-9]+|trunk' | head -1 | sed -e 's/^0\+//')
-		if [ "$version" == "trunk" ]; then version="22"; fi
+		if [ "$version" == "trunk" ]; then version="$trunk_version"; fi
 		semver=$(echo $compiler | sed -e "s/^clang-//" )
 		commit="unknown"
 
