@@ -2,3 +2,4 @@ frontend/files/etc/config/c++.enzyme.properties
 frontend/files/etc/config/c.enzyme.properties
 frontend/files/etc/config/cuda.enzyme.properties
 frontend/files/etc/config/llvm.enzyme.properties
+frontend/data
