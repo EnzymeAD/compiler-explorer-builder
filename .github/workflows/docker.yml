@@ -10,8 +10,7 @@ jobs:
   push_to_registries:
     name: Push Docker image to registry
     runs-on: ${{ matrix.os }}
-    # container:
-    #   image: ${{ (contains(matrix.os, 'linux') && 'ghcr.io/enzymead/docker-docker-images:main@sha256:230531860eac457c3c8b877a0f960262b87da9214a759ae85abdd9961a1e5ee9' ) || '' }}
+
     permissions:
       packages: write
       contents: read
@@ -24,12 +23,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v6
-
-      - name: Copy data directory
-        shell: bash
-        run: |
-          git submodule update --init --recursive
-          cp -r data frontend/
+        with:
+          submodules: recursive
 
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -46,6 +41,11 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}
+
+      - name: Copy data directory
+        shell: bash
+        run: |
+          cp -r data frontend/
 
       - name: Build and push frontend Docker images
         id: push
