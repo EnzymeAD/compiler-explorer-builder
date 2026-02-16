@@ -1,0 +1,65 @@
+name: Publish Compilers Docker image
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".gitmodules"
+      - "builder/**"
+      - "data/**"
+      - ".github/workflows/builder.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - ".gitmodules"
+      - "builder/**"
+      - "data/**"
+      - ".github/workflows/builder.yml"
+
+jobs:
+  builder:
+    name: Build builder
+    runs-on: docker
+    permissions:
+      packages: write
+      contents: read
+    env:
+      target: builder
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        # Don't log in if this is a pull request.
+        if: github.event_name != 'pull_request'
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}-${{ env.target }}
+
+      - name: Copy data directory
+        shell: bash
+        run: |
+          cp -r data ${{ env.target }}/
+
+      - name: Build and push ${{ env.target }} Docker images
+        id: push
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: "./${{ env.target }}"
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # See: https://docs.docker.com/build/ci/github-actions/cache/#github-cache
+          cache-from: type=gha,scope=${{ env.target }}
+          cache-to: type=gha,mode=min,scope=${{ env.target }}
