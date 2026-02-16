@@ -7,27 +7,24 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     compilers+=("$line")
 done < data/clang-versions.txt
 
-# Read the trunk version (e.g., 22) from the file and trim any whitespace
-trunk_version=$(cat data/trunk-llvm-version.txt | xargs)
+trunk_version=$(cat data/trunk-llvm-version.txt)
 
 declare -a branches=("main")
 
 # Utility to insert or update key value pairs in .properties files.
 setProperty () {
+	thekey=$1
+	newvalue=$2
+	filename=$3
 
-thekey=$1
-newvalue=$2
-filename=$3
-
-if ! grep "^[#]*\s*${thekey}=.*" $filename > /dev/null; then
-  echo "APPENDING because '${thekey}' not found"
-  echo "$thekey=$newvalue" >> $filename
-else
-  echo "SETTING because '${thekey}' found already"
-  escapedvalue=$(echo "$newvalue" | sed 's/\//\\\//g')
-  sed -i.bak "/${thekey}=/ s/=.*/=${escapedvalue}/" $filename
-fi
-
+	if ! grep "^[#]*\s*${thekey}=.*" $filename > /dev/null; then
+	  echo "APPENDING because '${thekey}' not found"
+	  echo "$thekey=$newvalue" >> $filename
+	else
+	  echo "SETTING because '${thekey}' found already"
+	  escapedvalue=$(echo "$newvalue" | sed 's/\//\\\//g')
+	  sed -i.bak "/${thekey}=/ s/=.*/=${escapedvalue}/" $filename
+	fi
 }
 
 # Create config files in a temporary directory
@@ -40,15 +37,30 @@ cp frontend/files/etc/config/cuda.enzyme.properties /tmp/ce/
 
 for branch in ${branches[@]}; do
 
-	setProperty "group.cuclang-enzyme-$branch.compilers" "cuclang15-enzyme-$branch:cuclang16-enzyme-$branch:cuclang17-enzyme-$branch:cuclang18-enzyme-$branch:cuclang19-enzyme-$branch:cuclang20-enzyme-$branch:cuclang21-enzyme-$branch:cuclang22-enzyme-$branch" "/tmp/ce/cuda.enzyme.properties"
+	# Initialize empty strings for the compiler lists
+  list_cuclang=""
+  list_clang=""
+  list_cclang=""
+  list_irclang=""
+  list_opt=""
 
-	setProperty "group.clang-enzyme-$branch.compilers" "clang15-enzyme-$branch:clang16-enzyme-$branch:clang17-enzyme-$branch:clang18-enzyme-$branch:clang19-enzyme-$branch:clang20-enzyme-$branch:clang21-enzyme-$branch:clang22-enzyme-$branch" "/tmp/ce/c++.enzyme.properties"
+  for compiler in "${compilers[@]}"; do
+			version=$(echo $compiler | grep -o -E '[0-9]+|trunk' | head -1 | sed -e 's/^0\+//')
+			if [ "$version" == "trunk" ]; then version="$trunk_version"; fi
+      
+      # Append to the strings with a colon separator
+      list_cuclang="${list_cuclang:+$list_cuclang:}cuclang$version-enzyme-$branch"
+      list_clang="${list_clang:+$list_clang:}clang$version-enzyme-$branch"
+      list_cclang="${list_cclang:+$list_cclang:}cclang$version-enzyme-$branch"
+      list_irclang="${list_irclang:+$list_irclang:}irclang$version-enzyme-$branch"
+      list_opt="${list_opt:+$list_opt:}opt$version-enzyme-$branch"
+  done
 
-	setProperty "group.clang-enzyme-$branch.compilers" "cclang15-enzyme-$branch:cclang16-enzyme-$branch:cclang17-enzyme-$branch:cclang18-enzyme-$branch:cclang19-enzyme-$branch:cclang20-enzyme-$branch:cclang21-enzyme-$branch:cclang22-enzyme-$branch" "/tmp/ce/c.enzyme.properties"
-
-	setProperty "group.clang-enzyme-$branch.compilers" "irclang15-enzyme-$branch:irclang16-enzyme-$branch:irclang17-enzyme-$branch:irclang18-enzyme-$branch:irclang19-enzyme-$branch:irclang20-enzyme-$branch:irclang21-enzyme-$branch:irclang22-enzyme-$branch" "/tmp/ce/llvm.enzyme.properties"
-
-	setProperty "group.opt-enzyme-$branch.compilers" "opt15-enzyme-$branch:opt16-enzyme-$branch:opt17-enzyme-$branch:opt18-enzyme-$branch:opt19-enzyme-$branch:opt20-enzyme-$branch:opt21-enzyme-$branch:opt22-enzyme-$branch" "/tmp/ce/llvm.enzyme.properties"
+	setProperty "group.cuclang-enzyme-$branch.compilers" "$list_cuclang" "/tmp/ce/cuda.enzyme.properties"
+  setProperty "group.clang-enzyme-$branch.compilers" "$list_clang" "/tmp/ce/c++.enzyme.properties"
+  setProperty "group.clang-enzyme-$branch.compilers" "$list_cclang" "/tmp/ce/c.enzyme.properties"
+  setProperty "group.clang-enzyme-$branch.compilers" "$list_irclang" "/tmp/ce/llvm.enzyme.properties"
+  setProperty "group.opt-enzyme-$branch.compilers" "$list_opt" "/tmp/ce/llvm.enzyme.properties"
 
 	setProperty "group.clang-enzyme-$branch.intelAsm" "-mllvm --x86-asm-syntax=intel" "/tmp/ce/c++.enzyme.properties"
 	setProperty "group.clang-enzyme-$branch.intelAsm" "-mllvm --x86-asm-syntax=intel" "/tmp/ce/c.enzyme.properties"
