@@ -1,0 +1,8 @@
+clang-15.0.0
+clang-16.0.0
+clang-17.0.1
+clang-18.1.0
+clang-19.1.0
+clang-20.1.0
+clang-21.1.0
+clang-assertions-trunk

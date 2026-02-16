@@ -1,0 +1,57 @@
+# Default settings for C++
+compilers=&clang-enzyme-main
+tools=clangquerydefault:strings:ldd
+
+tools.clangquerydefault.exe=/usr/bin/clang-query
+tools.clangquerydefault.name=clang-query (default)
+tools.clangquerydefault.type=independent
+tools.clangquerydefault.class=clang-query-tool
+tools.clangquerydefault.stdinHint=Query commands
+
+tools.ldd.name=ldd
+tools.ldd.exe=/usr/bin/ldd
+tools.ldd.type=postcompilation
+tools.ldd.class=readelf-tool
+tools.ldd.exclude=djggp
+tools.ldd.stdinHint=disabled
+
+tools.strings.exe=/usr/bin/strings
+tools.strings.name=strings
+tools.strings.type=postcompilation
+tools.strings.class=strings-tool
+tools.strings.exclude=djggp
+tools.strings.stdinHint=disabled
+
+defaultCompiler=clang15-enzyme-main
+postProcess=
+demangler=c++filt
+demanglerType=cpp
+objdumper=objdump
+options=
+supportsBinary=true
+binaryHideFuncRe=^(__.*|_(init|start|fini)|(de)?register_tm_clones|call_gmon_start|frame_dummy|\.plt.*|_dl_relocate_static_pie)$
+needsMulti=false
+stubRe=\bmain\b
+stubText=int main(void){return 0;/*stub provided by Compiler Explorer*/}
+supportsLibraryCodeFilter=true
+
+{% include 'libs.j2' %}
+
+group.clang-enzyme-main.compilers={% for compiler in compilers %}clang{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
+group.clang-enzyme-main.intelAsm=-mllvm --x86-asm-syntax=intel
+group.clang-enzyme-main.compilerType=clang
+group.clang-enzyme-main.supportsExecute=true
+group.clang-enzyme-main.isSemVer=true
+group.clang-enzyme-main.groupName=CLANG + ENZYME (main)
+group.clang-enzyme-main.options=-fno-discard-value-names
+
+{% for compiler in compilers %}
+compiler.clang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang++
+compiler.clang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
+compiler.clang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
+compiler.clang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
+{% endfor %}
+
+{% for compiler in compilers %}
+compiler.cuclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
+{% endfor %}

@@ -35,11 +35,16 @@ jobs:
           images: |
             ghcr.io/${{ github.repository }}
 
+      - name: Copy data directory
+        shell: bash
+        run: |
+          cp -r data frontend/
+
       - name: Build and push frontend Docker images
         id: push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-          context: "{{defaultContext}}:frontend"
+          context: "./frontend"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
