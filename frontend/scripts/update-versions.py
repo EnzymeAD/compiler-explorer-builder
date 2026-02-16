@@ -6,11 +6,17 @@ import shutil
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
+import sys
+
+if len(sys.argv) < 4:
+    print("Usage: update-versions.py <data dir> <template dir> <source config dir>")
+    sys.exit(1)
+
 # --- Configuration ---
-CLANG_VERSIONS_FILE = "data/clang-versions.txt"
-TRUNK_VERSION_FILE = "data/trunk-llvm-version.txt"
-SOURCE_CONFIG_DIR = Path("frontend/files/etc/config")
-TEMP_DIR = Path("/tmp/ce")
+CLANG_VERSIONS_FILE = sys.argv[2] + "/clang-versions.txt"
+TRUNK_VERSION_FILE = sys.argv[2] + "/data/trunk-llvm-version.txt"
+SOURCE_CONFIG_DIR = Path(sys.argv[3])
+TEMPLATE_DIR = Path(sys.argv[3])
 BRANCHES = ["main"]
 
 # Map of internal group keys to their respective property files
@@ -37,10 +43,7 @@ def get_compiler_info(raw_name, trunk_val):
     return version, semver
 
 def run_update():
-    # 1. Setup Directories
-    TEMP_DIR.mkdir(parents=True, exist_ok=True)
-    
-    # 2. Read input files
+    # Read input files
     trunk_val = Path(TRUNK_VERSION_FILE).read_text().strip()
     compilers_raw = Path(CLANG_VERSIONS_FILE).read_text().splitlines()
     compilers_raw = [c.strip() for c in compilers_raw if c.strip()]
@@ -49,7 +52,7 @@ def run_update():
 
     # 3. Generate context for templates
     env = Environment(loader=ChoiceLoader([
-        FileSystemLoader(str(SOURCE_CONFIG_DIR)),
+        FileSystemLoader(str(TEMPLATE_DIR)),
         FileSystemLoader("data")
     ]))
     
@@ -78,12 +81,9 @@ def run_update():
             template = env.get_template(template_name)
             rendered_content = template.render(context)
             
-            output_path = TEMP_DIR / f_name
+            output_path = SOURCE_CONFIG_DIR / f_name
             output_path.write_text(rendered_content)
 
-    # 5. Final Copy Back
-    for f in FILES_MAP.values():
-        shutil.copy(TEMP_DIR / f, SOURCE_CONFIG_DIR / f)
     print("Successfully updated all configurations using Jinja2 templates.")
 
 if __name__ == "__main__":

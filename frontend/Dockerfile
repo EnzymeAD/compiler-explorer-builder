@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y curl \
 
 FROM node_base AS build_deps
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends make rsync git \
+    && apt-get install -y --no-install-recommends make rsync git python3-jinja2 \
     && apt-get autoremove -y --purge \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
@@ -27,8 +27,13 @@ FROM build_deps AS build
 # COPY .git /src/.git
 COPY --exclude=.git compiler-explorer /src/compiler-explorer
 COPY files/ /src/compiler-explorer/
+COPY template_files/ /src/template_compiler-explorer/
+COPY scripts/ /src/scripts/
+COPY data/ /data/
+
 # Copy enzyme-specific overrides
 WORKDIR /src/compiler-explorer
+RUN python3 /src/scripts/update-versions.py /data /src/template_compiler-explorer/etc/config /src/template_compiler-explorer/etc/config
 RUN sed -i 's|${req.get("'"host"'")}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
 RUN make prebuild
 
