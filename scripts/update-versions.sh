@@ -8,7 +8,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 done < data/clang-versions.txt
 
 # Read the trunk version (e.g., 22) from the file and trim any whitespace
-trunk_version=$(cat trunk-llvm-version.txt | xargs)
+trunk_version=$(cat data/trunk-llvm-version.txt | xargs)
 
 declare -a branches=("main")
 
