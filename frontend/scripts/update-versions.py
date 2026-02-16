@@ -33,7 +33,7 @@ def get_compiler_info(raw_name, trunk_val):
     version_match = re.search(r'(\d+|trunk)', raw_name)
     major_version = version_match.group(1) if version_match else "unknown"
     
-    if version == "trunk":
+    if major_version == "trunk":
         major_version = trunk_val
     
     # Remove leading zeros if any
