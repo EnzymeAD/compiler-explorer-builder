@@ -24,8 +24,12 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v6
-        with:
-          submodules: recursive
+
+      - name: Copy data directory
+        shell: bash
+        run: |
+          git submodule update --init --recursive
+          cp -r data frontend/
 
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -42,11 +46,6 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}
-
-      - name: Copy data directory
-        shell: bash
-        run: |
-          cp -r data frontend/
 
       - name: Build and push frontend Docker images
         id: push
