@@ -13,10 +13,10 @@ if len(sys.argv) < 4:
     sys.exit(1)
 
 # --- Configuration ---
-CLANG_VERSIONS_FILE = sys.argv[2] + "/clang-versions.txt"
-TRUNK_VERSION_FILE = sys.argv[2] + "/data/trunk-llvm-version.txt"
+CLANG_VERSIONS_FILE = sys.argv[1] + "/clang-versions.txt"
+TRUNK_VERSION_FILE = sys.argv[1] + "/trunk-llvm-version.txt"
 SOURCE_CONFIG_DIR = Path(sys.argv[3])
-TEMPLATE_DIR = Path(sys.argv[3])
+TEMPLATE_DIR = Path(sys.argv[2])
 BRANCHES = ["main"]
 
 # Map of internal group keys to their respective property files
@@ -53,7 +53,7 @@ def run_update():
     # 3. Generate context for templates
     env = Environment(loader=ChoiceLoader([
         FileSystemLoader(str(TEMPLATE_DIR)),
-        FileSystemLoader("data")
+        FileSystemLoader(sys.argv[1])
     ]))
     
     for branch in BRANCHES:
