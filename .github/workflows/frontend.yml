@@ -7,6 +7,8 @@ on:
       - ".gitmodules"
       - "frontend/**"
       - "data/**"
+      - "template_files/**"
+      - "scripts/**"
       - ".github/workflows/frontend.yml"
   pull_request:
     branches: ["main"]
@@ -14,6 +16,8 @@ on:
       - ".gitmodules"
       - "frontend/**"
       - "data/**"
+      - "template_files/**"
+      - "scripts/**"
       - ".github/workflows/frontend.yml"
 
 concurrency:
