@@ -34,7 +34,7 @@ COPY ./data/ /ver_data
 # Copy enzyme-specific overrides
 WORKDIR /src/compiler-explorer
 RUN python3 /src/scripts/update-versions.py /ver_data /src/template_compiler-explorer/etc/config /src/compiler-explorer/etc/config
-RUN sed -i "s|\\${req.get('host')}|enzyme.mit.edu/explorer|g" lib/shortener/tinyurl.ts
+RUN sed -i 's|\${req.get('\''host'\'')}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
 RUN cat lib/shortener/tinyurl.ts
 RUN make prebuild
 
