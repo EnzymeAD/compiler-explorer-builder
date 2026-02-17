@@ -5,7 +5,7 @@ while read -r line; do
     # extract the major version number
     v=$(echo "$line" | cut -d- -f2 | cut -d. -f1)
 
-    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+    curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
     if [ -n "$v" ]; then
         echo "Installing clang-$v..."
         apt-add-repository "deb http://apt.llvm.org/$(lsb_release -c | cut -f2)/ llvm-toolchain-$(lsb_release -c | cut -f2)-${v} main"
