@@ -35,7 +35,7 @@ COPY ./data/ /ver_data
 WORKDIR /src/compiler-explorer
 RUN python3 /src/scripts/update-versions.py /ver_data /src/template_compiler-explorer/etc/config /src/compiler-explorer/etc/config
 RUN sed -i 's|${req.get("'"host"'")}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
-RUN echo lib/shortener/tinyurl.ts
+RUN cat lib/shortener/tinyurl.ts
 RUN make prebuild
 
 FROM node_base AS with_devtools
@@ -51,6 +51,7 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+COPY --from=build /ver_data /ver_data
 COPY install_clang.sh /install_clang.sh
 RUN /install_clang.sh
 
