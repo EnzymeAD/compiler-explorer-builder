@@ -1,0 +1,15 @@
+
+{# We want the newest version as default, so just take the last on the list #}
+compilers=&julia
+defaultCompiler=julia_{{ julia_versions[-1] | replace('.', '_') }}
+compilerType=julia
+compilerWrapper=/app/compiler-explorer/etc/scripts/julia_wrapper.jl
+
+group.julia.compilers={% for version in julia_versions %}julia_{{ version | replace('.', '_') }}{% if not loop.last %}:{% endif %}{% endfor %}
+group.julia.isSemVer=true
+group.julia.baseName=Julia
+
+{% for version in julia_versions %}
+compiler.julia_{{ version | replace('.', '_') }}.exe=/opt/compiler-explorer/julia-{{ version }}/bin/julia
+compiler.julia_{{ version | replace('.', '_') }}.semver={{ version }}
+{% endfor %}

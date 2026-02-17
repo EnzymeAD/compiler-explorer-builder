@@ -5,4 +5,3 @@ clang-18.1.0
 clang-19.1.0
 clang-20.1.0
 clang-21.1.0
-clang-assertions-trunk

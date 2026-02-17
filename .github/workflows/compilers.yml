@@ -16,6 +16,12 @@ on:
       - "data/**"
       - ".github/workflows/compilers.yml"
 
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 jobs:
   compilers:
     name: Build compilers
@@ -51,6 +57,8 @@ jobs:
         shell: bash
         run: |
           cp -r data ${{ env.target }}/
+          cp -r template_files ${{ env.target }}/
+          cp -r scripts ${{ env.target }}/
 
       - name: Build and push ${{ env.target }} Docker images
         id: push

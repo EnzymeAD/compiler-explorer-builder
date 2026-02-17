@@ -7,6 +7,8 @@ on:
       - ".gitmodules"
       - "frontend/**"
       - "data/**"
+      - "template_files/**"
+      - "scripts/**"
       - ".github/workflows/frontend.yml"
   pull_request:
     branches: ["main"]
@@ -14,7 +16,15 @@ on:
       - ".gitmodules"
       - "frontend/**"
       - "data/**"
+      - "template_files/**"
+      - "scripts/**"
       - ".github/workflows/frontend.yml"
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   frontend:
@@ -51,6 +61,8 @@ jobs:
         shell: bash
         run: |
           cp -r data ${{ env.target }}/
+          cp -r template_files ${{ env.target }}/
+          cp -r scripts ${{ env.target }}/
 
       - name: Build and push ${{ env.target }} Docker images
         id: push
