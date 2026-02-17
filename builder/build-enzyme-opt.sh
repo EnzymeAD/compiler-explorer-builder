@@ -25,29 +25,20 @@ fi
 mkdir -p /tmp/ce
 cp /app/compiler-explorer/etc/config/mlir.enzyme.properties /tmp/ce/
 
-for branch in ${branches[@]}; do
-	# Checkout Enzyme
-	git -C /app/Enzyme-JaX checkout $branch
-	git -C /app/Enzyme-JaX fetch
-	git -C /app/Enzyme-JaX reset --hard origin/$branch
+branch="main"
 
-	commit=$(git -C /app/Enzyme-JaX rev-parse --short=7 HEAD)
+commit=$(git -C /app/Enzyme-JaX rev-parse --short=7 HEAD)
 
-	for compiler in ${compilers[@]}; do
-		version=$(echo $compiler | grep -o -E '[0-9]+|trunk' | head -1 | sed -e 's/^0\+//')
-		semver=$(echo $compiler | sed -e "s/^mlir-//" )
+for compiler in ${compilers[@]}; do
+	version=$(echo $compiler | grep -o -E '[0-9]+|trunk' | head -1 | sed -e 's/^0\+//')
+	# Create directories if they don't already exists and copy built plugins.
+	mkdir -p /opt/compiler-explorer/$branch
+		
+	curl -L -o /tmp/enzyme-opt$version https://github.com/EnzymeAD/Enzyme-JAX/releases/download/nightly/enzymexlamlir-opt
+	chmod +x /tmp/enzyme-opt$version
+	mv /tmp/enzyme-opt$version /opt/compiler-explorer/$branch/enzyme-opt$version
 
-		# Create directories if they don't already exists and copy built plugins.
-		mkdir -p /opt/compiler-explorer/$branch
- 		
-		# Build enzyme-opt
-		cd /app/Enzyme-JaX
-		bazel build -c opt --config=public_cache //:enzymexlamlir-opt 
-		cp ./bazel-bin/enzymexlamlir-opt /opt/compiler-explorer/$branch/enzyme-opt$version
-		cd -		
-
-		setProperty "compiler.enzyme-opt$version-$branch.name" "enzyme-opt $version ($commit)" "/tmp/ce/mlir.enzyme.properties"
-	done
+	setProperty "compiler.enzyme-opt$version-$branch.name" "enzyme-opt $version ($commit)" "/tmp/ce/mlir.enzyme.properties"
 done
 
 # Move finished config files to the final location
