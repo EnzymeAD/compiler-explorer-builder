@@ -42,8 +42,8 @@ FROM node_base AS with_devtools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        libc6-dev \
-       libstdc++-14-dev \
-       libc++-19-dev \
+       libstdc++-12-dev \
+       libc++-15-dev \
        binutils \
        lsb-release \
        software-properties-common \ 
