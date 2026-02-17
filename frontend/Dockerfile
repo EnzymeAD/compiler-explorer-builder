@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.19
 
-FROM ubuntu:22.04 AS node_base
+FROM ubuntu:24.04 AS node_base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
