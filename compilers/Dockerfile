@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.19
 
-FROM ubuntu:24.04 AS build_deps
+FROM ubuntu:22.04 AS build_deps
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -30,30 +30,6 @@ COPY infra /app/infra
 RUN make -C /app/infra ce
 
 # Compilers directly supported by Compiler Explorer
-FROM infra AS compilers_1
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 15.0.0"
-FROM infra AS compilers_2
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 16.0.0"
-FROM infra AS compilers_3
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 17.0.1"
-FROM infra AS compilers_4
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 18.1.0"
-FROM infra AS compilers_5
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 19.1.0"
-FROM infra AS compilers_6
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 20.1.0"
-FROM infra AS compilers_7
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/c++/clang 21.1.0"
-FROM infra AS compilers_8
-RUN /app/infra/bin/ce_install --filter-match-any install \
-    "compilers/julia 1.10.0"
 FROM infra AS compilers_9
 RUN /app/infra/bin/ce_install --filter-match-any install \
     "compilers/julia 1.10.0"
@@ -80,14 +56,6 @@ RUN mkdir -p /opt/compiler-explorer/libs && \
 FROM infra AS complete
 LABEL org.opencontainers.image.source=https://github.com/EnzymeAD/compiler-explorer-builder
 LABEL org.opencontainers.image.description="Compilers for Enzyme Explorer"
-COPY --link --from=compilers_1 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_2 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_3 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_4 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_5 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_6 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_7 /opt/compiler-explorer /opt/compiler-explorer
-COPY --link --from=compilers_8 /opt/compiler-explorer /opt/compiler-explorer
 COPY --link --from=compilers_9 /opt/compiler-explorer /opt/compiler-explorer
 COPY --link --from=compilers_10 /opt/compiler-explorer /opt/compiler-explorer
 COPY --link --from=compilers_11 /opt/compiler-explorer /opt/compiler-explorer

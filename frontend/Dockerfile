@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.19
 
-FROM ubuntu:24.04 AS node_base
+FROM ubuntu:22.04 AS node_base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -34,19 +34,25 @@ COPY ./data/ /ver_data
 # Copy enzyme-specific overrides
 WORKDIR /src/compiler-explorer
 RUN python3 /src/scripts/update-versions.py /ver_data /src/template_compiler-explorer/etc/config /src/compiler-explorer/etc/config
-RUN sed -i 's|${req.get("'"host"'")}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
+RUN sed -i 's|\${req.get('\''host'\'')}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
 RUN make prebuild
 
 FROM node_base AS with_devtools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        libc6-dev \
-       libstdc++-14-dev \
-       libc++-19-dev \
+       libstdc++-12-dev \
+       libc++-15-dev \
        binutils \
+       lsb-release \
+       software-properties-common \ 
     && apt-get autoremove -y --purge \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /ver_data /ver_data
+COPY install_clang.sh /install_clang.sh
+RUN /install_clang.sh
 
 FROM with_devtools
 # Built output
