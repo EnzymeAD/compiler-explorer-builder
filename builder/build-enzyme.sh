@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Compilers are located under /opt/compiler-explorer/ 
-declare -a compilers=("clang-15.0.0" "clang-16.0.0" "clang-17.0.1" "clang-18.1.0" "clang-19.1.0" "clang-20.1.0" "clang-21.1.0" "clang-assertions-trunk")
+declare -a compilers=("clang-15.0.0" "clang-16.0.0" "clang-17.0.1" "clang-18.1.0" "clang-19.1.0" "clang-20.1.0" "clang-21.1.0")
 declare -a branches=("main")
 
 # Utility to insert or update key value pairs in .properties files.
@@ -28,37 +28,34 @@ cp /app/compiler-explorer/etc/config/c.enzyme.properties /tmp/ce/
 cp /app/compiler-explorer/etc/config/llvm.enzyme.properties /tmp/ce/
 cp /app/compiler-explorer/etc/config/cuda.enzyme.properties /tmp/ce/
 
-for branch in ${branches[@]}; do
-	# Checkout Enzyme
-	git -C /app/Enzyme checkout $branch
-	git -C /app/Enzyme fetch
-	git -C /app/Enzyme reset --hard origin/$branch
+branch = "main"
 
-	commit=$(git -C /app/Enzyme rev-parse --short=7 HEAD)
+# Checkout Enzyme
+git -C /app/Enzyme checkout $branch
+git -C /app/Enzyme fetch
+git -C /app/Enzyme reset --hard origin/$branch
 
-	for compiler in ${compilers[@]}; do
-		version=$(echo $compiler | grep -o -E '[0-9]+|trunk' | head -1 | sed -e 's/^0\+//')
-		if [ "$version" == "trunk" ]; then version="23"; fi
-		semver=$(echo $compiler | sed -e "s/^clang-//" )
+commit=$(git -C /app/Enzyme rev-parse --short=7 HEAD)
 
-		mkdir -p /tmp/build/$branch/$compiler
+for compiler in ${compilers[@]}; do
+	version=$(echo $compiler | grep -o -E '[0-9]+|trunk' | head -1 | sed -e 's/^0\+//')
+	if [ "$version" == "trunk" ]; then version="23"; fi
+	semver=$(echo $compiler | sed -e "s/^clang-//" )
+	
+	# Create directories if they don't already exists and copy built plugins.
+	mkdir -p /opt/compiler-explorer/$branch
+	
+	curl -L -o /tmp/ClangEnzyme-$version.so https://github.com/EnzymeAD/Enzyme/releases/download/nightly/ClangEnzyme-$version.so
+	mv /tmp/ClangEnzyme-$version.so /opt/compiler-explorer/$branch/ClangEnzyme-$version.so
+	
+	curl -L -o /tmp/LLVMEnzyme-$version.so https://github.com/EnzymeAD/Enzyme/releases/download/nightly/LLVMEnzyme-$version.so
+	mv /tmp/LLVMEnzyme-$version.so /opt/compiler-explorer/$branch/LLVMEnzyme-$version.so
 
-		# Build Enzyme
-		cmake -G Ninja -B /tmp/build/$branch/$compiler -S /app/Enzyme/enzyme -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Debug -DLLVM_DIR=/opt/compiler-explorer/$compiler/lib/cmake/llvm
-		cmake --build /tmp/build/$branch/$compiler
-		
-		# Create directories if they don't already exists and copy built plugins.
-		mkdir -p /opt/compiler-explorer/$branch
-		
-		cp /tmp/build/$branch/$compiler/Enzyme/ClangEnzyme-$version.so /opt/compiler-explorer/$branch/ClangEnzyme-$version.so
-		cp /tmp/build/$branch/$compiler/Enzyme/LLVMEnzyme-$version.so /opt/compiler-explorer/$branch/LLVMEnzyme-$version.so
-
-		setProperty "compiler.cuclang$version-enzyme-$branch.name" "cuclang $version ($commit)" "/tmp/ce/cuda.enzyme.properties"
-		setProperty "compiler.clang$version-enzyme-$branch.name" "clang $version ($commit)" "/tmp/ce/c++.enzyme.properties"
-		setProperty "compiler.cclang$version-enzyme-$branch.name" "clang $version ($commit)" "/tmp/ce/c.enzyme.properties"
-		setProperty "compiler.irclang$version-enzyme-$branch.name" "clang $version ($commit)" "/tmp/ce/llvm.enzyme.properties"
-		setProperty "compiler.opt$version-enzyme-$branch.name" "opt $version ($commit)" "/tmp/ce/llvm.enzyme.properties"
-	done
+	setProperty "compiler.cuclang$version-enzyme-$branch.name" "cuclang $version ($commit)" "/tmp/ce/cuda.enzyme.properties"
+	setProperty "compiler.clang$version-enzyme-$branch.name" "clang $version ($commit)" "/tmp/ce/c++.enzyme.properties"
+	setProperty "compiler.cclang$version-enzyme-$branch.name" "clang $version ($commit)" "/tmp/ce/c.enzyme.properties"
+	setProperty "compiler.irclang$version-enzyme-$branch.name" "clang $version ($commit)" "/tmp/ce/llvm.enzyme.properties"
+	setProperty "compiler.opt$version-enzyme-$branch.name" "opt $version ($commit)" "/tmp/ce/llvm.enzyme.properties"
 done
 
 # Move finished config files to the final location
