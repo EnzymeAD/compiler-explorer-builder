@@ -35,7 +35,6 @@ COPY ./data/ /ver_data
 WORKDIR /src/compiler-explorer
 RUN python3 /src/scripts/update-versions.py /ver_data /src/template_compiler-explorer/etc/config /src/compiler-explorer/etc/config
 RUN sed -i 's|\${req.get('\''host'\'')}|enzyme.mit.edu/explorer|g' lib/shortener/tinyurl.ts
-RUN cat lib/shortener/tinyurl.ts
 RUN make prebuild
 
 FROM node_base AS with_devtools
