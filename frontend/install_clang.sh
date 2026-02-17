@@ -1,6 +1,6 @@
 
 # Read versions from file available in Docker volume
-while read -r line; do
+while read -r line || [ -n "$line" ]; do
     # format is like clang-15.0.0
     # extract the major version number
     v=$(echo "$line" | cut -d- -f2 | cut -d. -f1)
