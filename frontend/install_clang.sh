@@ -8,7 +8,7 @@ while read -r line || [ -n "$line" ]; do
     curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
     if [ -n "$v" ]; then
         echo "Installing clang-$v..."
-        apt-add-repository "deb http://apt.llvm.org/$(lsb_release -c | cut -f2)/ llvm-toolchain-$(lsb_release -c | cut -f2)-${v} main"
+        apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-${v} main"
         apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev
     fi
 done < /ver_data/clang-versions.txt
