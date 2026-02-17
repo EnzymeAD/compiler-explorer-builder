@@ -67,7 +67,6 @@ def main():
             "version": version,
             "semver": semver,
             "enzyme_commit": commit if commit is not None else "<unknown>",
-            "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>"
         })
 
         if commit is not None:
@@ -101,7 +100,8 @@ def main():
     context = {
         "compilers": compiler_data,
         "julia_versions": julia_versions,
-        "trunk_val": trunk_val
+        "trunk_val": trunk_val,
+        "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>"
     }
 
 
