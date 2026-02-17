@@ -15,6 +15,7 @@ if len(sys.argv) < 4:
 
 # --- Configuration ---
 CLANG_VERSIONS_FILE = Path(sys.argv[1]) / "clang-versions.txt"
+JULIA_VERSIONS_FILE = Path(sys.argv[1]) / "julia-versions.txt"
 TRUNK_VERSION_FILE = Path(sys.argv[1]) / "trunk-llvm-version.txt"
 SOURCE_CONFIG_DIR = Path(sys.argv[3])
 TEMPLATE_DIR = Path(sys.argv[2])
@@ -49,6 +50,7 @@ def main():
     # Read input files
     trunk_val = TRUNK_VERSION_FILE.read_text().strip()
     compilers_raw = [c.strip() for c in CLANG_VERSIONS_FILE.read_text().splitlines() if c.strip()]
+    julia_versions = [c.strip() for c in JULIA_VERSIONS_FILE.read_text().splitlines() if c.strip()]
 
     # 3. Generate context for templates
     env = Environment(loader=ChoiceLoader([
@@ -98,6 +100,7 @@ def main():
 
     context = {
         "compilers": compiler_data,
+        "julia_versions": julia_versions,
         "trunk_val": trunk_val
     }
 
@@ -113,6 +116,7 @@ def main():
     
     if ejaxcommit is not None or len(sys.argv) == 4:
         FILES_MAP.append(("mlir", "mlir.enzyme.properties"))
+        FILES_MAP.append(("julia", "julia.enzyme.properties"))
 
     # 4. Render and write properties files
     for f_key, f_name in FILES_MAP:
