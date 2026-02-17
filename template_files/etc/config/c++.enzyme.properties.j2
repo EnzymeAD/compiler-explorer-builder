@@ -9,7 +9,7 @@ tools.clangquerydefault.class=clang-query-tool
 tools.clangquerydefault.stdinHint=Query commands
 
 tools.ldd.name=ldd
-tools.ldd.exe=/usr/bin/lld-{{ compiler.version }}
+tools.ldd.exe=/usr/bin/lld-${{ compilers[0].version }}
 tools.ldd.type=postcompilation
 tools.ldd.class=readelf-tool
 tools.ldd.exclude=djggp
@@ -22,7 +22,7 @@ tools.strings.class=strings-tool
 tools.strings.exclude=djggp
 tools.strings.stdinHint=disabled
 
-defaultCompiler=clang15-enzyme-main
+defaultCompiler=clang${{ compilers[0].version }}-enzyme-main
 postProcess=
 demangler=c++filt
 demanglerType=cpp

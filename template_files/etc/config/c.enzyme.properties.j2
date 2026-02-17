@@ -1,6 +1,6 @@
 # Default settings for C
 compilers=&clang-enzyme-main
-defaultCompiler=cclang12-enzyme-main
+defaultCompiler=cclang${{ compilers[0].version }}-enzyme-main
 demangler=c++filt
 objdumper=objdump
 postProcess=

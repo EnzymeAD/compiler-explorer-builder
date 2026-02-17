@@ -3,7 +3,7 @@ objdumper=objdump
 demangler=c++filt
 
 compilers=&clang-enzyme-main:&opt-enzyme-main
-defaultCompiler=opt12-enzyme-main
+defaultCompiler=opt${{ compilers[0].version }}-enzyme-main
 
 group.opt-enzyme-main.compilers={% for compiler in compilers %}opt{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
 group.opt-enzyme-main.compilerType=opt
