@@ -14,6 +14,10 @@ for branch in ${branches[@]}; do
    if [ "$HEADHASH" != "$UPSTREAMHASH" ] 
    then
       commit=$(git -C /app/Enzyme rev-parse --short=7 HEAD)
+      echo -e ${FINISHED}Updating Enzyme, old was $HEADHASH new was $UPSTREAMHASH ${NOCOLOR}
+      git -C /app/Enzyme checkout $branch
+      git -C /app/Enzyme fetch
+      git -C /app/Enzyme reset --hard origin/$branch
    else
       echo -e ${FINISHED}Current branch is up to date with origin/$branch.${NOCOLOR}
    fi
@@ -24,6 +28,10 @@ for branch in ${branches[@]}; do
    if [ "$JHEADHASH" != "$JUPSTREAMHASH" ] 
    then
       ejaxcommit=$(git -C /app/Enzyme-JaX rev-parse --short=7 HEAD)
+      echo -e ${FINISHED}Updating Enzyme-JaX, old was $JHEADHASH new was $JUPSTREAMHASH ${NOCOLOR}
+      git -C /app/Enzyme-JaX checkout $branch
+      git -C /app/Enzyme-JaX fetch
+      git -C /app/Enzyme-JaX reset --hard origin/$branch
    else
       echo -e ${FINISHED}Current branch is up to date with origin/$branch.${NOCOLOR}
    fi
