@@ -70,7 +70,7 @@ def main():
         })
 
         if commit is not None:
-            os.makedirs("/opt/compiler-explorer/{branch}", exist_ok=True)
+            os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
             for lib in ["ClangEnzyme", "LLVMEnzyme"]:
                 filename = f"{lib}-{version}.so"
                 url = f"https://github.com/EnzymeAD/Enzyme/releases/download/nightly/{filename}"
@@ -86,7 +86,7 @@ def main():
                     print(f"Error handling {filename}: {e}")
 
         if ejaxcommit is not None:
-            os.makedirs("/opt/compiler-explorer/{branch}", exist_ok=True)
+            os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
             filename = "enzymexlamlir-opt"
             url = f"https://github.com/EnzymeAD/Enzyme-JAX/releases/download/nightly/{filename}"
             tmp_path = Path("/tmp") / filename
