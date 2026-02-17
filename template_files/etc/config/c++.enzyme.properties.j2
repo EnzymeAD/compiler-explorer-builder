@@ -9,7 +9,7 @@ tools.clangquerydefault.class=clang-query-tool
 tools.clangquerydefault.stdinHint=Query commands
 
 tools.ldd.name=ldd
-tools.ldd.exe=/usr/bin/ldd
+tools.ldd.exe=/usr/bin/lld-{{ compiler.version }}
 tools.ldd.type=postcompilation
 tools.ldd.class=readelf-tool
 tools.ldd.exclude=djggp
@@ -46,7 +46,7 @@ group.clang-enzyme-main.groupName=CLANG + ENZYME (main)
 group.clang-enzyme-main.options=-fno-discard-value-names
 
 {% for compiler in compilers %}
-compiler.clang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang++
+compiler.clang{{ compiler.version }}-enzyme-main.exe=/usr/bin/clang++-{{ compiler.version }}
 compiler.clang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
 compiler.clang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.clang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})

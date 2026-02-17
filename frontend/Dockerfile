@@ -44,9 +44,14 @@ RUN apt-get update \
        libstdc++-14-dev \
        libc++-19-dev \
        binutils \
+       lsb-release \
+       software-properties-common \ # for apt-add-repository
     && apt-get autoremove -y --purge \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+COPY install_clang.sh /install_clang.sh
+RUN /install_clang.sh
 
 FROM with_devtools
 # Built output

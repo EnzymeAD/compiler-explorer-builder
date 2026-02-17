@@ -57,8 +57,6 @@ jobs:
         shell: bash
         run: |
           cp -r data ${{ env.target }}/
-          cp -r template_files ${{ env.target }}/
-          cp -r scripts ${{ env.target }}/
 
       - name: Build and push ${{ env.target }} Docker images
         id: push

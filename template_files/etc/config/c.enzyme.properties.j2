@@ -23,7 +23,7 @@ libs=petsc
 {% include 'libs.j2' %}
 
 {% for compiler in compilers %}
-compiler.cclang{{ compiler.version }}-enzyme-main.exe=/opt/compiler-explorer/{{ compiler.raw_name }}/bin/clang
+compiler.cclang{{ compiler.version }}-enzyme-main.exe=/usr/bin/clang-{{ compiler.version }}
 compiler.cclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
 compiler.cclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.cclang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})

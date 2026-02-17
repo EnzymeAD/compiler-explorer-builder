@@ -16,7 +16,6 @@ RUN ccache -M 20G
 COPY scripts /app/scripts
 COPY data /app/data
 COPY template_files /app/template_files
-COPY install-compilers.sh /app/install-compilers.sh
 COPY install-libraries.sh /app/install-libraries.sh
 COPY check-upstream.sh /app/check-upstream.sh
 COPY entrypoint.sh /app/entrypoint.sh
