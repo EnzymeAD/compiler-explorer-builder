@@ -1,4 +1,5 @@
 #!/bin/bash
+exit 0
 
 old_clang=$(readlink -f /opt/compiler-explorer/clang-assertions-trunk)
 
