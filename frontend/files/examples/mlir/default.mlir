@@ -1,3 +1,5 @@
+// add --enzyme to the compiler options to generate the derivative
+
 func.func @ppow(%x: f64) -> f64 {
   %cst = arith.constant 1.000000e+00 : f64
   %c0 = arith.constant 0 : index

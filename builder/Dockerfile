@@ -18,8 +18,6 @@ COPY data /app/data
 COPY template_files /app/template_files
 COPY install-compilers.sh /app/install-compilers.sh
 COPY install-libraries.sh /app/install-libraries.sh
-COPY build-enzyme.sh /app/build-enzyme.sh
-COPY build-enzyme-opt.sh /app/build-enzyme-opt.sh
 COPY check-upstream.sh /app/check-upstream.sh
 COPY entrypoint.sh /app/entrypoint.sh
 COPY update-explorer.sh /app/update-explorer.sh
