@@ -5,7 +5,7 @@ defaultCompiler=julia_{{ julia_versions[-1] | replace('.', '_') }}
 compilerType=julia
 compilerWrapper=/app/compiler-explorer/etc/scripts/julia_wrapper.jl
 
-group.julia.compilers={{ julia_versions | map('replace', '.', '_') | map('format', 'julia_%s') | join(':') }}
+group.julia.compilers={% for version in julia_versions %}julia_{{ version | replace('.', '_') }}{% if not loop.last %}:{% endif %}{% endfor %}
 group.julia.isSemVer=true
 group.julia.baseName=Julia
 
