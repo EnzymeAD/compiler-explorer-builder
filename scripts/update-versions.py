@@ -87,19 +87,23 @@ def main():
 
         if ejaxcommit is not None:
             os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
-            filename = "enzymexlamlir-opt"
-            url = f"https://github.com/EnzymeAD/Enzyme-JAX/releases/download/nightly/{filename}"
-            tmp_path = Path("/tmp") / filename
-            dest_path = Path(f"/opt/compiler-explorer/{branch}") / "enzyme-opttrunk"
 
-            print(f"Downloading {url} to {tmp_path}")
-            try:
-                urllib.request.urlretrieve(url, tmp_path)
-                os.chmod(str(tmp_path), 0o755)
-                print(f"Moving {tmp_path} to {dest_path}")
-                shutil.move(str(tmp_path), str(dest_path))
-            except Exception as e:
-                print(f"Error handling {filename}: {e}")
+            for (filename, target) in [
+                ("enzymexlamlir-opt", "enzyme-opttrunk"),
+                ("hlo-translate", "hlo-translate"),
+            ]:
+                url = f"https://github.com/EnzymeAD/Enzyme-JAX/releases/download/nightly/{filename}"
+                tmp_path = Path("/tmp") / filename
+                dest_path = Path(f"/opt/compiler-explorer/{branch}") / 
+
+                print(f"Downloading {url} to {tmp_path}")
+                try:
+                    urllib.request.urlretrieve(url, tmp_path)
+                    os.chmod(str(tmp_path), 0o755)
+                    print(f"Moving {tmp_path} to {dest_path}")
+                    shutil.move(str(tmp_path), str(dest_path))
+                except Exception as e:
+                    print(f"Error handling {filename}: {e}")
 
     context = {
         "compilers": compiler_data,
