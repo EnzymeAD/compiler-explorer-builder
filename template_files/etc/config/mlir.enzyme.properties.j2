@@ -1,4 +1,4 @@
-compilers=&enzyme-opt-main
+compilers=&enzyme-opt-main;&hlo-trainslate-main
 defaultCompiler=enzyme-opttrunk-main
 compilerType=mlir
 
@@ -14,3 +14,12 @@ compiler.enzyme-opttrunk-main.exe=/opt/compiler-explorer/main/enzyme-opttrunk
 compiler.enzyme-opttrunk-main.semver=trunk
 compiler.enzyme-opttrunk-main.options=
 compiler.enzyme-opttrunk-main.name=enzyme-opt trunk ({{ enzymejax_commit }})
+
+group.hlo-translate-main.compilers=hlo-translatetrunk-main
+group.hlo-translate-main.isSemVer=true
+group.hlo-translate-main.baseName=hlo-translate-main (main)
+
+compiler.hlo-translatetrunk-main.exe=/opt/compiler-explorer/main/hlo-translate
+compiler.hlo-translatetrunk-main.semver=trunk
+compiler.hlo-translatetrunk-main.options=--mlir-to-hlo
+compiler.hlo-translatetrunk-main.name=hlo-translate trunk ({{ enzymejax_commit }})
