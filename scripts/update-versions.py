@@ -94,7 +94,7 @@ def main():
             ]:
                 url = f"https://github.com/EnzymeAD/Enzyme-JAX/releases/download/nightly/{filename}"
                 tmp_path = Path("/tmp") / filename
-                dest_path = Path(f"/opt/compiler-explorer/{branch}") / 
+                dest_path = Path(f"/opt/compiler-explorer/{branch}") / target
 
                 print(f"Downloading {url} to {tmp_path}")
                 try:
