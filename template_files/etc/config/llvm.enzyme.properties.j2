@@ -32,7 +32,7 @@ group.clang-enzyme-main.options=-fno-discard-value-names
 
 {% for compiler in compilers %}
 compiler.irclang{{ compiler.version }}-enzyme-main.exe=/usr/bin/clang-{{ compiler.version }}
-compiler.irclang{{ compiler.version }}-enzyme-main.options=-fpass-plugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
+compiler.irclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
 compiler.irclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.irclang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
 {% endfor %}
