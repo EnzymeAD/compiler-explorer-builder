@@ -2,7 +2,7 @@
 
 git -C /app/Enzyme fetch
 git -C /app/Enzyme-JaX fetch
-git -C /Reactant fetch
+git -C /app/Reactant fetch
 
 declare -a branches=("main")
 
