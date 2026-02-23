@@ -43,7 +43,7 @@ for branch in ${branches[@]}; do
    RUPSTREAMHASH=$(git -C /app/Reactant rev-parse $branch@{upstream})
    reactantcommit=$(git -C /app/Reactant rev-parse --short=7 HEAD)
 
-   if [ "$JHEADHASH" != "$JUPSTREAMHASH" ] 
+   if [ "$RHEADHASH" != "$RUPSTREAMHASH" ] 
    then
       echo -e ${FINISHED}Updating Reactant, old was $RHEADHASH new was $RUPSTREAMHASH ${NOCOLOR}
       git -C /app/Reactant checkout $branch

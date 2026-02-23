@@ -9,9 +9,12 @@ from jinja2 import Environment, FileSystemLoader, ChoiceLoader
 import sys
 import urllib.request
 
+
 if len(sys.argv) < 4:
     print("Usage: update-versions.py <data dir> <template dir> <source config dir>")
     sys.exit(1)
+
+print("Called update-versions.py with ", sys.argv)
 
 # --- Configuration ---
 CLANG_VERSIONS_FILE = Path(sys.argv[1]) / "clang-versions.txt"
