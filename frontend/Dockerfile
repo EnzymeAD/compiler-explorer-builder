@@ -68,6 +68,7 @@ COPY --from=build /src/compiler-explorer/public /app/public
 ENV JULIA_DEPOT_PATH=/local/juliapackages:/opt/compiler-explorer/juliapackages
 ENV JULIA_PKG_SERVER=http://package-proxy
 ENV NODE_ENV=production
+ENV PATH="$PATH:/opt/compiler-explorer/cuda/12.9.1/bin"
 
 LABEL org.opencontainers.image.source=https://github.com/EnzymeAD/compiler-explorer-builder
 LABEL org.opencontainers.image.description="Enzyme Explorer"

@@ -27,9 +27,9 @@ group.reclang-enzyme-main.compilers=reclang
 group.reclang-enzyme-main.compilerType=clang-cuda
 group.reclang-enzyme-main.objdumper=/opt/compiler-explorer/cuda/12.9.1/bin/nvdisasm
 group.reclang-enzyme-main.isSemVer=true
-group.reclang-enzyme-main.groupName=REACTANT CLANG (main)
+group.reclang-enzyme-main.groupName=DEVICE REACTANT CLANG (main)
 group.reclang-enzyme-main.supportsExecute=false
 
 compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
-compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21
+compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21 --cuda-path=/opt/compiler-explorer/cuda/12.9.1 --cuda-gpu-arch=sm_70
 compiler.reclang.name=clang Reactant Clang ({{ reactant_commit }})
