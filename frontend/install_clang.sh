@@ -19,6 +19,6 @@ while read -r line || [ -n "$line" ]; do
         # Use the variable to construct the repository string
         apt-add-repository "deb http://apt.llvm.org/${distro}/ llvm-toolchain-${distro}-${v} main"
 
-        apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev
+        apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev opt-${v}
     fi
 done < /ver_data/clang-versions.txt
