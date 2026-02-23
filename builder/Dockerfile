@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl git cron m
 
 RUN git clone -b main https://github.com/EnzymeAD/Enzyme.git /app/Enzyme
 RUN git clone -b main https://github.com/EnzymeAD/Enzyme-JaX.git /app/Enzyme-JaX
+RUN git clone -b main https://github.com/EnzymeAD/Reactant.git /app/Reactant
 
 RUN ccache -M 20G
 

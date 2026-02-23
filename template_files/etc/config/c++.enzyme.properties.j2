@@ -1,5 +1,5 @@
 # Default settings for C++
-compilers=&clang-enzyme-main
+compilers=&clang-enzyme-main:&reclang-enzyme-main
 tools=clangquerydefault:strings:ldd
 
 tools.clangquerydefault.exe=/usr/bin/clang-query
@@ -55,3 +55,14 @@ compiler.clang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version 
 {% for compiler in compilers %}
 compiler.cuclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 {% endfor %}
+
+group.reclang-enzyme-main.compilers=reclang
+group.reclang-enzyme-main.intelAsm=-mllvm --x86-asm-syntax=intel
+group.reclang-enzyme-main.compilerType=clang
+group.reclang-enzyme-main.supportsExecute=true
+group.reclang-enzyme-main.isSemVer=true
+group.reclang-enzyme-main.groupName=REACTANT CLANG (main)
+group.reclang-enzyme-main.options=-fno-discard-value-names
+
+compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
+compiler.reclang.name=clang Reactant Clang ({{ reactant_commit }})

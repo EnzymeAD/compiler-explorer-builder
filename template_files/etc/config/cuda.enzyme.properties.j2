@@ -1,4 +1,4 @@
-compilers=&cuclang-enzyme-main
+compilers=&cuclang-enzyme-main:&reclang-enzyme-main
 defaultCompiler=cuclang${{ compilers[-1].version }}-enzyme-main
 supportsBinary=true
 supportsExecute=false
@@ -9,6 +9,7 @@ group.cuclang-enzyme-main.compilerType=clang-cuda
 group.cuclang-enzyme-main.objdumper=/opt/compiler-explorer/cuda/12.9.1/bin/nvdisasm
 group.cuclang-enzyme-main.isSemVer=true
 group.cuclang-enzyme-main.groupName=CUCLANG + ENZYME (main)
+group.cuclang-enzyme-main.supportsExecute=false
 
 libs=eigen:boost:nlohmann_json:petsc
 
@@ -21,5 +22,13 @@ compiler.cuclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.cuclang{{ compiler.version }}-enzyme-main.name=cuclang {{ compiler.version }} ({{ compiler.enzyme_commit }})
 {% endfor %}
 
-group.cuclang-enzyme-main.supportsExecute=false
-group.cuclang.groupName=CUCLANG + ENZYME (main)
+
+group.reclang-enzyme-main.compilers=reclang
+group.reclang-enzyme-main.compilerType=clang-cuda
+group.reclang-enzyme-main.objdumper=/opt/compiler-explorer/cuda/12.9.1/bin/nvdisasm
+group.reclang-enzyme-main.isSemVer=true
+group.reclang-enzyme-main.groupName=REACTANT CLANG (main)
+group.reclang-enzyme-main.supportsExecute=false
+
+compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
+compiler.reclang.name=clang Reactant Clang ({{ reactant_commit }})

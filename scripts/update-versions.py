@@ -31,6 +31,12 @@ if len(sys.argv) > 5:
     if ejaxcommit == "None":
         ejaxcommit = None
 
+reactant_commit = None
+if len(sys.argv) > 6:
+    reactant_commit = sys.argv[6]
+    if reactant_commit == "None":
+        reactant_commit = None
+
 def get_compiler_info(raw_name, trunk_val):
     """Extracts version and semver from strings like 'clang-15.0.0' or 'clang-assertions-trunk'."""
     # Matches digits or 'trunk'
@@ -105,18 +111,38 @@ def main():
                 except Exception as e:
                     print(f"Error handling {filename}: {e}")
 
+        if reactant_commit is not None:
+            os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
+
+            for (filename, target) in [
+                ("reactant-clang", "reactant-clang"),
+            ]:
+                url = f"https://github.com/EnzymeAD/Reactant/releases/download/nightly/{filename}"
+                tmp_path = Path("/tmp") / filename
+                dest_path = Path(f"/opt/compiler-explorer/{branch}") / target
+
+                print(f"Downloading {url} to {tmp_path}")
+                try:
+                    urllib.request.urlretrieve(url, tmp_path)
+                    os.chmod(str(tmp_path), 0o755)
+                    print(f"Moving {tmp_path} to {dest_path}")
+                    shutil.move(str(tmp_path), str(dest_path))
+                except Exception as e:
+                    print(f"Error handling {filename}: {e}")
+
     context = {
         "compilers": compiler_data,
         "julia_versions": julia_versions,
         "trunk_val": trunk_val,
-        "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>"
+        "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>",
+        "reactant_commit": reactant_commit if reactant_commit is not None else "<unknown>"
     }
 
 
     # Map of internal group keys to their respective property files
     FILES_MAP = []
 
-    if commit is not None or len(sys.argv) == 4:
+    if commit is not None or reactant_commit is not None or len(sys.argv) == 4:
         FILES_MAP.append(("cuda", "cuda.enzyme.properties"))
         FILES_MAP.append(("cpp",  "c++.enzyme.properties"))
         FILES_MAP.append(("c",    "c.enzyme.properties"))
