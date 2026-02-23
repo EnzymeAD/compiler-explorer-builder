@@ -37,7 +37,7 @@ supportsLibraryCodeFilter=true
 
 {% include 'libs.j2' %}
 
-group.clang-enzyme-main.compilers={% for compiler in compilers %}clang{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
+group.clang-enzyme-main.compilers={% for compiler in compilers %}clang{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}:reclang
 group.clang-enzyme-main.intelAsm=-mllvm --x86-asm-syntax=intel
 group.clang-enzyme-main.compilerType=clang
 group.clang-enzyme-main.supportsExecute=true
@@ -51,6 +51,9 @@ compiler.clang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-
 compiler.clang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.clang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
 {% endfor %}
+
+compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
+compiler.reclang.name=clang Reactant Clang ({{ compiler.reactant_commit }})
 
 {% for compiler in compilers %}
 compiler.cuclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
