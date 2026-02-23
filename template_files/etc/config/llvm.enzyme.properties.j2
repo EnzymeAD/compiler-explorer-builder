@@ -2,7 +2,7 @@ binaryHideFuncRe=^(__.*|_(init|start|fini)|(de)?register_tm_clones|call_gmon_sta
 objdumper=objdump
 demangler=c++filt
 
-compilers=&clang-enzyme-main:&opt-enzyme-main
+compilers=&clang-enzyme-main:&opt-enzyme-main:&reclang-enzyme-main
 defaultCompiler=opt${{ compilers[0].version }}-enzyme-main
 
 group.opt-enzyme-main.compilers={% for compiler in compilers %}opt{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
@@ -36,3 +36,15 @@ compiler.irclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compile
 compiler.irclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.irclang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
 {% endfor %}
+
+group.reclang-enzyme-main.compilers=reclang
+group.reclang-enzyme-main.intelAsm=-mllvm --x86-asm-syntax=intel
+group.reclang-enzyme-main.compilerType=clang
+group.reclang-enzyme-main.supportsExecute=true
+group.reclang-enzyme-main.isSemVer=true
+group.reclang-enzyme-main.groupName=REACTANT CLANG (main)
+group.reclang-enzyme-main.options=-fno-discard-value-names
+
+compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
+compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21
+compiler.reclang.name=clang Reactant Clang ({{ reactant_commit }})
