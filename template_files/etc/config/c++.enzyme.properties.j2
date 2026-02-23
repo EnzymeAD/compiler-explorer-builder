@@ -53,7 +53,7 @@ compiler.clang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version 
 {% endfor %}
 
 compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
-compiler.reclang.name=clang Reactant Clang ({{ compiler.reactant_commit }})
+compiler.reclang.name=clang Reactant Clang ({{ reactant_commit }})
 
 {% for compiler in compilers %}
 compiler.cuclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
