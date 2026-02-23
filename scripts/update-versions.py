@@ -134,7 +134,7 @@ def main():
         "compilers": compiler_data,
         "julia_versions": julia_versions,
         "trunk_val": trunk_val,
-        "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>"
+        "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>",
         "reactant_commit": reactant_commit if reactant_commit is not None else "<unknown>"
     }
 
