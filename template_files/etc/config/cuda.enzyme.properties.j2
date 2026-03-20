@@ -17,7 +17,7 @@ libs=eigen:boost:nlohmann_json:petsc
 
 {% for compiler in compilers %}
 compiler.cuclang{{ compiler.version }}-enzyme-main.exe=/usr/bin/clang++-{{ compiler.version }}
-compiler.cuclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so --cuda-path=/opt/compiler-explorer/cuda/12.9.1 --cuda-gpu-arch=sm_70 --cuda-device-only
+compiler.cuclang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so --cuda-path=/opt/compiler-explorer/cuda/12.9.1 --cuda-gpu-arch=sm_70 --cuda-device-only -I/opt/compiler-explorer/libraries/include -L/opt/compiler-explorer/lib
 compiler.cuclang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.cuclang{{ compiler.version }}-enzyme-main.name=cuclang {{ compiler.version }} ({{ compiler.enzyme_commit }})
 {% endfor %}
@@ -31,5 +31,5 @@ group.reclang-enzyme-main.groupName=DEVICE REACTANT CLANG (main)
 group.reclang-enzyme-main.supportsExecute=false
 
 compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
-compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21 --cuda-path=/opt/compiler-explorer/cuda/12.9.1 --cuda-gpu-arch=sm_70
+compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21 --cuda-path=/opt/compiler-explorer/cuda/12.9.1 --cuda-gpu-arch=sm_70 -I/opt/compiler-explorer/libraries/include -L/opt/compiler-explorer/lib
 compiler.reclang.name=Reactant Clang ({{ reactant_commit }})

@@ -1,7 +1,7 @@
 #################################
 #################################
 # Installed libs (See c++.amazon.properties for a scheme of libs group)
-libs=eigen:boost:nlohmann_json:petsc:mfem
+libs=eigen:boost:nlohmann_json:petsc
 
 libs.boost.name=Boost
 libs.boost.versions=178
@@ -26,11 +26,3 @@ libs.petsc.versions=3194
 libs.petsc.url=https://petsc.org
 libs.petsc.versions.3194.version=3.19.4
 libs.petsc.versions.3194.path=/opt/compiler-explorer/libs/petsc-3.19.4/include
-
-libs.mfem.name=mfem
-libs.mfem.url=https://mfem.org
-libs.mfem.description=MFEM is a free, lightweight, scalable C++ library for finite element methods.<br /><br />Note that the trunk version is no longer available, use v4.7 instead.
-libs.mfem.packagedheaders=true
-libs.mfem.versions=47
-libs.mfem.staticliblink=mfem
-libs.mfem.versions.47.version=4.7
