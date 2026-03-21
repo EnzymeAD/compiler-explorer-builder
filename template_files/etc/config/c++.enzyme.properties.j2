@@ -47,7 +47,7 @@ group.clang-enzyme-main.options=-fno-discard-value-names
 
 {% for compiler in compilers %}
 compiler.clang{{ compiler.version }}-enzyme-main.exe=/usr/bin/clang++-{{ compiler.version }}
-compiler.clang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so
+compiler.clang{{ compiler.version }}-enzyme-main.options=-fplugin=/opt/compiler-explorer/main/ClangEnzyme-{{ compiler.version }}.so -I/opt/compiler-explorer/libraries/include -L/opt/compiler-explorer/lib
 compiler.clang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
 compiler.clang{{ compiler.version }}-enzyme-main.name=clang {{ compiler.version }} ({{ compiler.enzyme_commit }})
 {% endfor %}
@@ -65,5 +65,5 @@ group.reclang-enzyme-main.groupName=REACTANT CLANG (main)
 group.reclang-enzyme-main.options=-fno-discard-value-names
 
 compiler.reclang.exe=/opt/compiler-explorer/main/reactant-clang
-compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21
+compiler.reclang.options=-resource-dir=/usr/lib/llvm-21/lib/clang/21 -I/opt/compiler-explorer/libraries/include -L/opt/compiler-explorer/lib
 compiler.reclang.name=Reactant Clang ({{ reactant_commit }})
