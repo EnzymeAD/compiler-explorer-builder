@@ -1,0 +1,73 @@
+services:
+    # Builds Julia, CUDA, and C++ library artifacts into /opt/compiler-explorer.
+    # The image is tagged with the GHCR path so that the builder service, whose
+    # Dockerfile starts with FROM ghcr.io/enzymead/compiler-explorer-builder-compilers:main,
+    # resolves to this locally-built image instead of pulling from the registry.
+    # The container runs once to copy its artifacts into the shared volume, then exits.
+    compilers:
+        build:
+            context: ./compilers
+        image: ghcr.io/enzymead/compiler-explorer-builder-compilers:main
+        # Override the /bin/false entrypoint to populate the shared volume, then exit.
+        entrypoint:
+            [
+                "sh",
+                "-c",
+                "cp -rp /opt/compiler-explorer/. /mnt/compilers/ && echo 'Compilers ready'",
+            ]
+        volumes:
+            - compilers-data:/mnt/compilers
+        restart: "no"
+
+    # The compiler-explorer web app. Waits for the compilers init container to
+    # finish populating the shared volume before starting.
+    # Requires the compiler-explorer git submodule to be checked out:
+    #   git submodule update --init --recursive
+    # Exposed on http://localhost:10240/explorer
+    frontend:
+        build:
+            context: .
+            dockerfile: frontend/Dockerfile
+        depends_on:
+            compilers:
+                condition: service_completed_successfully
+        volumes:
+            - compilers-data:/opt/compiler-explorer:ro
+        ports:
+            - "10240:10240"
+        labels:
+            # The builder identifies this service by the 'explorer' label.
+            # In Docker Swarm mode this is used by: docker service ls --filter label=explorer
+            - "explorer=true"
+        restart: unless-stopped
+
+    # Based on the compilers image. Clones Enzyme / Enzyme-JaX / Reactant and
+    # runs a cron job every 5 minutes to detect upstream CI changes.
+    # When an update is detected it calls `docker service update` (Docker Swarm)
+    # to re-deploy the frontend service, so it must start after the frontend is up.
+    #
+    # NOTE: The builder uses Docker Swarm commands (`docker service update`).
+    # To use it in a Swarm environment, initialize the swarm first:
+    #   docker swarm init
+    # The Docker socket is mounted so the builder can manage services on the host.
+    builder:
+        build:
+            context: .
+            dockerfile: builder/Dockerfile
+        depends_on:
+            - frontend
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - builder-enzyme:/app/Enzyme
+            - builder-enzyme-jax:/app/Enzyme-JaX
+            - builder-reactant:/app/Reactant
+            - compilers-data:/opt/compiler-explorer
+        restart: unless-stopped
+
+volumes:
+    # Shared compiler artifacts (populated by the compilers init container)
+    compilers-data:
+    # Persistent git checkouts for the builder so clones survive restarts
+    builder-enzyme:
+    builder-enzyme-jax:
+    builder-reactant:

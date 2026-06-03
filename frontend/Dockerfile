@@ -4,12 +4,17 @@ FROM ubuntu:24.04 AS node_base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y curl \
-    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get update && apt-get install -y --no-install-recommends nodejs \
-    && apt-get autoremove -y --purge \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl
+
+RUN update-ca-certificates
+
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash \
+    && \. "$HOME/.nvm/nvm.sh" \
+    && nvm install 22 \
+    && nvm alias default 22 \
+    && ln -sf "$(nvm which default)" /usr/local/bin/node \
+    && ln -sf "$(dirname $(nvm which default))/npm" /usr/local/bin/npm \
+    && ln -sf "$(dirname $(nvm which default))/npx" /usr/local/bin/npx
 
 FROM node_base AS build_deps
 RUN apt-get update \
@@ -25,8 +30,8 @@ FROM build_deps AS build
 # after every commit. Also remove the `--exclude=.git` on the
 # subsequent line.
 # COPY .git /src/.git
-COPY --exclude=.git compiler-explorer /src/compiler-explorer
-COPY files/ /src/compiler-explorer/
+COPY --exclude=.git frontend/compiler-explorer /src/compiler-explorer
+COPY frontend/files/ /src/compiler-explorer/
 COPY template_files/ /src/template_compiler-explorer/
 COPY scripts/ /src/scripts/
 COPY ./data/ /ver_data
@@ -45,14 +50,14 @@ RUN apt-get update \
        libc++-15-dev \
        binutils \
        lsb-release \
-       software-properties-common \ 
+       software-properties-common \
        file \
     && apt-get autoremove -y --purge \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /ver_data /ver_data
-COPY install_clang.sh /install_clang.sh
+COPY frontend/install_clang.sh /install_clang.sh
 RUN /install_clang.sh
 
 FROM with_devtools
