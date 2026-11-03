@@ -1,4 +1,4 @@
-// add --enzyme to the compiler options to generate the derivative
+// add --enzyme (and optionally --canonicalize --remove-unnecessary-enzyme-ops --enzyme-simplify-math) to the compiler options to generate the derivative
 // Note that MLIR can't be directly executed, so make sure you open this as a "compiler", not "executor" view
 
 func.func @ppow(%x: f64) -> f64 {
@@ -14,6 +14,6 @@ func.func @ppow(%x: f64) -> f64 {
 }
 
 func.func @dppow(%x: f64, %dr: f64) -> f64 {
-  %r = enzyme.autodiff @ppow(%x, %dr) { activity=[#enzyme<activity enzyme_active>], ret_activity=[#enzyme<activity enzyme_activenoneed>] } : (f64, f64) -> f64
+  %r = enzyme.autodiff @ppow(%x, %dr) <{ activity=[#enzyme.activity<enzyme_active>], ret_activity=[#enzyme.activity<enzyme_activenoneed>] }> : (f64, f64) -> f64
   return %r : f64
 }
