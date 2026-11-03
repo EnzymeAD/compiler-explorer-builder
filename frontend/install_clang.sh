@@ -19,6 +19,14 @@ while read -r line || [ -n "$line" ]; do
         # Use the variable to construct the repository string
         apt-add-repository "deb http://apt.llvm.org/${distro}/ llvm-toolchain-${distro}-${v} main"
 
-        apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev
+        if [ "$v" -ge 20 ]; then
+            apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev flang-${v}
+            mkdir -p /usr/local/include/enzyme-fortran-${v} /var/cache/enzyme-fortran-modules/${v}
+            /usr/bin/flang-${v} -fsyntax-only -J/usr/local/include/enzyme-fortran-${v} -I/usr/local/include/enzyme-fortran-${v} /etc/fortran/enzyme_function_hooks.f90
+            /usr/bin/flang-${v} -fsyntax-only -J/usr/local/include/enzyme-fortran-${v} -I/usr/local/include/enzyme-fortran-${v} /etc/fortran/enzyme.f90
+            cp /usr/local/include/enzyme-fortran-${v}/*.mod /var/cache/enzyme-fortran-modules/${v}/
+        else
+            apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev
+        fi
     fi
 done < /ver_data/clang-versions.txt

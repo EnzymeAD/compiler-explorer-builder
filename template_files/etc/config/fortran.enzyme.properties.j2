@@ -1,0 +1,25 @@
+# Default settings for Fortran
+compilers=&flang-enzyme-main
+defaultCompiler=flang{{ flang_compilers[-1].version }}-enzyme-main
+demangler=c++filt
+objdumper=objdump
+postProcess=
+supportsBinary=true
+supportsExecute=true
+supportsLibraryCodeFilter=true
+binaryHideFuncRe=^(__.*|_(init|start|fini)|(de)?register_tm_clones|call_gmon_start|frame_dummy|\.plt.*|.*@plt.*|_dl_relocate_static_pie|_GLOBAL__sub_I_.*|_Z.*|_FortranA.*|CFI_.*|atexit|backtrace_|(Convert|Validate|AllocateValidated).*|.*\(.*)$
+
+group.flang-enzyme-main.compilers={% for compiler in flang_compilers %}flang{{ compiler.version }}-enzyme-main{% if not loop.last %}:{% endif %}{% endfor %}
+group.flang-enzyme-main.intelAsm=-masm=intel
+group.flang-enzyme-main.compilerType=flang
+group.flang-enzyme-main.compilerCategories=flang
+group.flang-enzyme-main.supportsExecute=true
+group.flang-enzyme-main.isSemVer=true
+group.flang-enzyme-main.groupName=FLANG + ENZYME (main)
+
+{% for compiler in flang_compilers %}
+compiler.flang{{ compiler.version }}-enzyme-main.exe=/usr/bin/flang-{{ compiler.version }}
+compiler.flang{{ compiler.version }}-enzyme-main.options=--config=/opt/compiler-explorer/main/FlangEnzyme-{{ compiler.version }}.cfg -Xflang -load -Xflang /opt/compiler-explorer/main/FlangEnzyme-{{ compiler.version }}.so -I/var/cache/enzyme-fortran-modules/{{ compiler.version }}
+compiler.flang{{ compiler.version }}-enzyme-main.semver={{ compiler.semver }}
+compiler.flang{{ compiler.version }}-enzyme-main.name=flang {{ compiler.version }} ({{ compiler.enzyme_commit }})
+{% endfor %}

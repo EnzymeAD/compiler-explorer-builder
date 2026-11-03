@@ -52,6 +52,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /ver_data /ver_data
+COPY files/etc/fortran /etc/fortran
 COPY install_clang.sh /install_clang.sh
 RUN /install_clang.sh
 
@@ -64,6 +65,8 @@ COPY --from=build /src/compiler-explorer/examples /app/examples
 COPY --from=build /src/compiler-explorer/etc /app/etc
 COPY --from=build /src/compiler-explorer/views /app/views
 COPY --from=build /src/compiler-explorer/public /app/public
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENV JULIA_DEPOT_PATH=/local/juliapackages:/opt/compiler-explorer/juliapackages
 ENV JULIA_PKG_SERVER=http://package-proxy
@@ -73,4 +76,4 @@ ENV PATH="$PATH:/opt/compiler-explorer/cuda/12.9.1/bin"
 LABEL org.opencontainers.image.source=https://github.com/EnzymeAD/compiler-explorer-builder
 LABEL org.opencontainers.image.description="Enzyme Explorer"
 WORKDIR /app
-ENTRYPOINT ["node", "./out/dist/app.js", "--static", "./out/webpack/static", "--env", "enzyme"]
+ENTRYPOINT ["/entrypoint.sh"]
