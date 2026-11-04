@@ -80,8 +80,17 @@ def main():
 
         if commit is not None:
             os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
-            for lib in ["ClangEnzyme", "LLVMEnzyme"]:
-                filename = f"{lib}-{version}.so"
+            artifacts = [
+                f"ClangEnzyme-{version}.so",
+                f"LLVMEnzyme-{version}.so",
+                f"LLDEnzyme-{version}.so",
+            ]
+            if version >= 20:
+                artifacts.extend([
+                    f"FlangEnzyme-{version}.so",
+                    f"FlangEnzyme-{version}.cfg",
+                ])
+            for filename in artifacts:
                 url = f"https://github.com/EnzymeAD/Enzyme/releases/download/nightly/{filename}"
                 tmp_path = Path("/tmp") / filename
                 dest_path = Path(f"/opt/compiler-explorer/{branch}") / filename
@@ -133,8 +142,21 @@ def main():
                 except Exception as e:
                     print(f"Error handling {filename}: {e}")
 
+    if commit is not None:
+        fortran_src_dir = Path("/app/Enzyme/enzyme/Fortran")
+        if fortran_src_dir.is_dir():
+            fortran_dest_dir = Path(f"/opt/compiler-explorer/{branch}/fortran")
+            fortran_dest_dir.mkdir(parents=True, exist_ok=True)
+            for f90_name in ["enzyme_function_hooks.f90", "enzyme.f90"]:
+                src_f90 = fortran_src_dir / f90_name
+                if src_f90.is_file():
+                    shutil.copy2(str(src_f90), str(fortran_dest_dir / f90_name))
+
+    flang_compilers = [c for c in compiler_data if c["version"] >= 20]
+
     context = {
         "compilers": compiler_data,
+        "flang_compilers": flang_compilers,
         "julia_versions": julia_versions,
         "trunk_val": trunk_val,
         "enzymejax_commit": ejaxcommit if ejaxcommit is not None else "<unknown>",
@@ -146,10 +168,11 @@ def main():
     FILES_MAP = []
 
     if commit is not None or reactant_commit is not None or len(sys.argv) == 4:
-        FILES_MAP.append(("cuda", "cuda.enzyme.properties"))
-        FILES_MAP.append(("cpp",  "c++.enzyme.properties"))
-        FILES_MAP.append(("c",    "c.enzyme.properties"))
-        FILES_MAP.append(("llvm", "llvm.enzyme.properties"))
+        FILES_MAP.append(("cuda",    "cuda.enzyme.properties"))
+        FILES_MAP.append(("cpp",     "c++.enzyme.properties"))
+        FILES_MAP.append(("c",       "c.enzyme.properties"))
+        FILES_MAP.append(("fortran", "fortran.enzyme.properties"))
+        FILES_MAP.append(("llvm",    "llvm.enzyme.properties"))
     
     if ejaxcommit is not None or len(sys.argv) == 4:
         FILES_MAP.append(("mlir", "mlir.enzyme.properties"))
