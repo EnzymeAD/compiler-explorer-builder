@@ -16,28 +16,29 @@ module custom_rule_mod
 contains
 
   subroutine scaled_op(x, y)
-    double precision, intent(in) :: x
-    double precision, intent(out) :: y
-    y = 2.0d0 * x
+    real, intent(in) :: x
+    real, intent(out) :: y
+    y = 2.0 * x
   end subroutine scaled_op
 
   subroutine augment_scaled_op(x, dx, y, dy)
-    double precision, intent(in) :: x, dx
-    double precision, intent(out) :: y
-    double precision, intent(inout) :: dy
+    real, intent(in) :: x, dx
+    real, intent(out) :: y
+    real, intent(inout) :: dy
     call scaled_op(x, y)
   end subroutine augment_scaled_op
 
   subroutine reverse_scaled_op(x, dx, y, dy)
-    double precision, intent(in) :: x, y
-    double precision, intent(inout) :: dx, dy
+    real, intent(in) :: x, y
+    real, intent(inout) :: dx, dy
     ! Custom rule: supply d/dx log(1 + x) = 1 / (1 + x)
-    dx = dx + dy / (1.0d0 + x)
-    dy = 0.0d0
+    dx = dx + dy / (1.0 + x)
+    dy = 0.0
   end subroutine reverse_scaled_op
 
-  double precision function evaluate(x) result(y)
-    double precision, intent(in) :: x
+  function evaluate(x) result(y)
+    real, intent(in) :: x
+    real :: y
     call scaled_op(x, y)
   end function evaluate
 
@@ -47,10 +48,10 @@ program main
   use enzyme, only: enzyme_autodiff
   use custom_rule_mod, only: evaluate
   implicit none
-  double precision :: x, dx, y
+  real :: x, dx, y
 
-  x = 2.0d0
-  dx = 0.0d0
+  x = 2.0
+  dx = 0.0
   y = evaluate(x)
   call enzyme_autodiff(evaluate, x, dx)
 

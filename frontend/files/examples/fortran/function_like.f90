@@ -9,13 +9,15 @@ module function_like_mod
 
 contains
 
-  double precision function approx_log1p(x) result(y)
-    double precision, value :: x
-    y = x - 0.5d0 * x * x
+  function approx_log1p(x) result(y)
+    real, value :: x
+    real :: y
+    y = x - 0.5 * x * x
   end function approx_log1p
 
-  double precision function wrapper(x) result(y)
-    double precision, intent(in) :: x
+  function wrapper(x) result(y)
+    real, intent(in) :: x
+    real :: y
     y = approx_log1p(x)
   end function wrapper
 
@@ -25,10 +27,10 @@ program main
   use enzyme, only: enzyme_autodiff
   use function_like_mod, only: wrapper
   implicit none
-  double precision :: x, dx
+  real :: x, dx
 
-  x = 2.0d0
-  dx = 0.0d0
+  x = 2.0
+  dx = 0.0
   call enzyme_autodiff(wrapper, x, dx)
 
   write(*, '(a,f7.4)') 'wrapper(2.0)  =', wrapper(x)

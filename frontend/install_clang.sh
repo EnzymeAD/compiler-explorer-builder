@@ -1,5 +1,9 @@
 curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 
+mkdir -p /etc/fortran
+curl -fsSL https://raw.githubusercontent.com/EnzymeAD/Enzyme/main/enzyme/Fortran/enzyme_function_hooks.f90 -o /etc/fortran/enzyme_function_hooks.f90
+curl -fsSL https://raw.githubusercontent.com/EnzymeAD/Enzyme/main/enzyme/Fortran/enzyme.f90 -o /etc/fortran/enzyme.f90
+
 # Read versions from file available in Docker volume
 while read -r line || [ -n "$line" ]; do
     # format is like clang-15.0.0
@@ -21,12 +25,13 @@ while read -r line || [ -n "$line" ]; do
 
         if [ "$v" -ge 20 ]; then
             apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev flang-${v}
-            mkdir -p /usr/local/include/enzyme-fortran-${v} /var/cache/enzyme-fortran-modules/${v}
-            /usr/bin/flang-${v} -fsyntax-only -J/usr/local/include/enzyme-fortran-${v} -I/usr/local/include/enzyme-fortran-${v} /etc/fortran/enzyme_function_hooks.f90
-            /usr/bin/flang-${v} -fsyntax-only -J/usr/local/include/enzyme-fortran-${v} -I/usr/local/include/enzyme-fortran-${v} /etc/fortran/enzyme.f90
-            cp /usr/local/include/enzyme-fortran-${v}/*.mod /var/cache/enzyme-fortran-modules/${v}/
+            mkdir -p /var/cache/enzyme-fortran-modules/${v}
+            /usr/bin/flang-${v} -fsyntax-only -J/var/cache/enzyme-fortran-modules/${v} -I/var/cache/enzyme-fortran-modules/${v} /etc/fortran/enzyme_function_hooks.f90
+            /usr/bin/flang-${v} -fsyntax-only -J/var/cache/enzyme-fortran-modules/${v} -I/var/cache/enzyme-fortran-modules/${v} /etc/fortran/enzyme.f90
         else
             apt-get install -y llvm-${v}-dev libomp-${v}-dev lld-${v} clang-${v} libclang-${v}-dev
         fi
     fi
 done < /ver_data/clang-versions.txt
+
+rm -rf /etc/fortran

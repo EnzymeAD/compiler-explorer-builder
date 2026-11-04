@@ -1,29 +1,36 @@
-double precision function square(x)
-  implicit none
-  double precision, intent(in) :: x
-  square = x * x
-end function square
-
-double precision function dsquare(x)
+module square_mod
   use enzyme, only: enzyme_autodiff
   implicit none
-  double precision, external :: square
-  double precision, intent(in) :: x
-  double precision :: dx
-  dx = 0.0d0
-  ! Returns the derivative of square(x), i.e. 2 * x
-  call enzyme_autodiff(square, x, dx)
-  dsquare = dx
-end function dsquare
+  private
+  public :: square, dsquare
+
+contains
+
+  real function square(x)
+    real, intent(in) :: x
+    square = x * x
+  end function square
+
+  real function dsquare(x)
+    real, intent(in) :: x
+    real :: dx
+    dx = 0.0
+    ! Returns the derivative of square(x), i.e. 2 * x
+    call enzyme_autodiff(square, x, dx)
+    dsquare = dx
+  end function dsquare
+
+end module square_mod
 
 program main
+  use square_mod, only: square, dsquare
   implicit none
-  double precision, external :: square, dsquare
-  double precision :: x
+  real :: x
   integer :: i
+
   do i = 1, 4
-    x = dble(i)
-    write(*, '(a,f3.1,a,f4.1,a,f3.1,a,f4.1)') &
+    x = real(i)
+    write(*, '(2(a,f3.1,a,f4.1))') &
       'square(', x, ')=', square(x), ', dsquare(', x, ')=', dsquare(x)
   end do
 end program main

@@ -52,7 +52,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /ver_data /ver_data
-COPY files/etc/fortran /etc/fortran
 COPY install_clang.sh /install_clang.sh
 RUN /install_clang.sh
 

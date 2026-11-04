@@ -80,8 +80,17 @@ def main():
 
         if commit is not None:
             os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
-            for lib in ["ClangEnzyme", "LLVMEnzyme", "LLDEnzyme"]:
-                filename = f"{lib}-{version}.so"
+            artifacts = [
+                f"ClangEnzyme-{version}.so",
+                f"LLVMEnzyme-{version}.so",
+                f"LLDEnzyme-{version}.so",
+            ]
+            if version >= 20:
+                artifacts.extend([
+                    f"FlangEnzyme-{version}.so",
+                    f"FlangEnzyme-{version}.cfg",
+                ])
+            for filename in artifacts:
                 url = f"https://github.com/EnzymeAD/Enzyme/releases/download/nightly/{filename}"
                 tmp_path = Path("/tmp") / filename
                 dest_path = Path(f"/opt/compiler-explorer/{branch}") / filename
@@ -93,38 +102,6 @@ def main():
                     shutil.move(str(tmp_path), str(dest_path))
                 except Exception as e:
                     print(f"Error handling {filename}: {e}")
-
-            if version >= 20:
-                flang_filename = f"FlangEnzyme-{version}.so"
-                flang_url = f"https://github.com/EnzymeAD/Enzyme/releases/download/nightly/{flang_filename}"
-                flang_tmp = Path("/tmp") / flang_filename
-                flang_dest = Path(f"/opt/compiler-explorer/{branch}") / flang_filename
-                lld_dest = Path(f"/opt/compiler-explorer/{branch}") / f"LLDEnzyme-{version}.so"
-
-                print(f"Downloading {flang_url} to {flang_tmp}")
-                try:
-                    urllib.request.urlretrieve(flang_url, flang_tmp)
-                    print(f"Moving {flang_tmp} to {flang_dest}")
-                    shutil.move(str(flang_tmp), str(flang_dest))
-                except Exception as e:
-                    print(f"FlangEnzyme download unavailable ({e}); falling back to LLDEnzyme-{version}.so")
-                    if lld_dest.exists():
-                        shutil.copy2(str(lld_dest), str(flang_dest))
-
-                cfg_filename = f"FlangEnzyme-{version}.cfg"
-                cfg_url = f"https://github.com/EnzymeAD/Enzyme/releases/download/nightly/{cfg_filename}"
-                cfg_tmp = Path("/tmp") / cfg_filename
-                cfg_dest = Path(f"/opt/compiler-explorer/{branch}") / cfg_filename
-                try:
-                    urllib.request.urlretrieve(cfg_url, cfg_tmp)
-                    shutil.move(str(cfg_tmp), str(cfg_dest))
-                except Exception:
-                    cfg_dest.write_text(
-                        f"-fpass-plugin=<CFGDIR>/FlangEnzyme-{version}.so\n"
-                        f"-fuse-ld=lld\n"
-                        f"-Wl,-mllvm,-load=<CFGDIR>/LLDEnzyme-{version}.so\n"
-                        f"-Wl,--load-pass-plugin=<CFGDIR>/LLDEnzyme-{version}.so\n"
-                    )
 
         if ejaxcommit is not None:
             os.makedirs(f"/opt/compiler-explorer/{branch}", exist_ok=True)
